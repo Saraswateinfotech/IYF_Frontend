@@ -20,8 +20,6 @@ export const deleteDashboardAccount = async (user_id) => {
   }
 };
 
-
-
 export const submitRegistrationForm = async (formData) => {
   try {
     const response = await api.post("/students/save", {
@@ -45,3 +43,12 @@ export const submitRegistrationForm = async (formData) => {
   }
 };
 
+export const fetchAllStudents = async () => {
+  try {
+    const response = await api.get("/students/allStudents");
+    return response.data; 
+  } catch (error) {
+    console.error("Error fetching all students:", error);
+    throw error;
+  }
+};
