@@ -1,41 +1,64 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Script from 'next/script';
-import { submitRegistrationForm } from 'services/apiCollection';
+import {
+  submitRegistrationForm,
+  fetchDashboardAccounts,
+} from 'services/apiCollection';
 
 const RegistrationForm = ({ isOpen, closeModal }) => {
   const [formData, setFormData] = useState({
     name: '',
     dob: '',
     mobile: '',
-    frontlinerName: '',
+    frontlinerid: '',
     profession: '',
     address: '',
     classMode: '',
     paymentMethod: '',
     amount: 0,
-    razorpay_payment_id: ''
+    razorpay_payment_id: '',
   });
 
+  const [frontliners, setFrontliners] = useState([]); // Will store the list of frontliners from API
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Fetching frontliner data on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchDashboardAccounts();
+        setFrontliners(data); // Store the fetched frontliners
+      } catch (err) {
+        console.error('Error fetching accounts:', err);
+        toast.error('Failed to load accounts. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const resetForm = () => {
     setFormData({
       name: '',
       dob: '',
       mobile: '',
-      frontlinerName: '',
+      frontlinerid: '',
       profession: '',
       address: '',
       classMode: '',
       paymentMethod: '',
       amount: 0,
-      razorpay_payment_id: ''
+      razorpay_payment_id: '',
     });
     setErrors({});
   };
@@ -46,12 +69,21 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
     if (!formData.name) newErrors.name = 'Name is required!';
     if (!formData.dob) newErrors.dob = 'Date of Birth is required!';
     if (!formData.mobile) newErrors.mobile = 'Mobile Number is required!';
-    if (!formData.profession) newErrors.profession = 'Please select a profession!';
-    if (!formData.classMode) newErrors.classMode = 'Please select a class mode!';
-    if (!formData.paymentMethod) newErrors.paymentMethod = 'Please select a payment method!';
-    if (!formData.frontlinerName) newErrors.frontlinerName = 'Please select a frontliner!';
-    if ((formData.classMode === 'Online' || formData.paymentMethod === 'Referral') && formData.amount === 0) {
-      newErrors.amount = 'Payment is required for Online & Referral registrations!';
+    if (!formData.profession)
+      newErrors.profession = 'Please select a profession!';
+    if (!formData.classMode)
+      newErrors.classMode = 'Please select a class mode!';
+    if (!formData.paymentMethod)
+      newErrors.paymentMethod = 'Please select a payment method!';
+    if (!formData.frontlinerid)
+      newErrors.frontlinerid = 'Please select a frontliner!';
+    if (
+      (formData.classMode === 'Online' ||
+        formData.paymentMethod === 'Referral') &&
+      formData.amount === 0
+    ) {
+      newErrors.amount =
+        'Payment is required for Online & Referral registrations!';
     }
 
     setErrors(newErrors);
@@ -63,7 +95,8 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
 
     let updatedAmount = formData.amount;
     if (name === 'profession') {
-      updatedAmount = value === 'Student' ? 100 : value === 'Job Candidate' ? 200 : 0;
+      updatedAmount =
+        value === 'Student' ? 100 : value === 'Job Candidate' ? 200 : 0;
     }
 
     setFormData((prev) => ({
@@ -72,6 +105,7 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
       amount: updatedAmount,
     }));
 
+    // Clear error for this field
     setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
@@ -81,10 +115,11 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
     setIsSubmitting(true);
 
     const method = formData.paymentMethod.toLowerCase();
-
     const updatedForm = {
       ...formData,
-      payment_status: method === 'unpaid' ? 'not_received' : 'received',
+      // payment_status: method === 'unpaid' ? 'not_received' : 'received',
+      payment_status: method === 'unpaid' || method === 'cash' ? 'not_received' : 'received',
+
     };
 
     if (method === 'online' || method === 'referral') {
@@ -154,76 +189,140 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
     <>
       <ToastContainer />
       <Script src="https://checkout.razorpay.com/v1/checkout.js" />
-      <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-md z-50 p-4">
-        <div className="bg-white p-6 rounded-lg w-full max-w-2xl shadow-xl relative max-h-[90vh] overflow-y-auto scrollbar-hide">
-          <button onClick={closeModal} className="absolute top-3 right-3 text-gray-700">
+
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 p-4 backdrop-blur-md">
+        <div className="scrollbar-hide relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
+          <button
+            onClick={closeModal}
+            className="absolute right-3 top-3 text-gray-700"
+          >
             <X size={20} />
           </button>
-          <h2 className="text-xl font-bold mb-4 text-center">Registration Form</h2>
+          <h2 className="mb-4 text-center text-xl font-bold">
+            Registration Form
+          </h2>
 
           <div className="flex flex-col gap-4">
             {/* Name */}
             <label className="font-semibold">Name *</label>
-            <input type="text" name="name" className="px-4 py-2 border rounded-md" value={formData.name} onChange={handleChange} />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+            <input
+              type="text"
+              name="name"
+              className="rounded-md border px-4 py-2"
+              value={formData.name}
+              onChange={handleChange}
+            />
+            {errors.name && (
+              <p className="text-sm text-red-500">{errors.name}</p>
+            )}
 
             {/* DOB */}
             <label className="font-semibold">Date of Birth *</label>
-            <input type="date" name="dob" className="px-4 py-2 border rounded-md" value={formData.dob} onChange={handleChange} />
-            {errors.dob && <p className="text-red-500 text-sm">{errors.dob}</p>}
+            <input
+              type="date"
+              name="dob"
+              className="rounded-md border px-4 py-2"
+              value={formData.dob}
+              onChange={handleChange}
+            />
+            {errors.dob && <p className="text-sm text-red-500">{errors.dob}</p>}
 
             {/* Mobile */}
             <label className="font-semibold">Mobile Number *</label>
-            <input type="text" name="mobile" className="px-4 py-2 border rounded-md" value={formData.mobile} onChange={handleChange} />
-            {errors.mobile && <p className="text-red-500 text-sm">{errors.mobile}</p>}
+            <input
+              type="text"
+              name="mobile"
+              className="rounded-md border px-4 py-2"
+              value={formData.mobile}
+              onChange={handleChange}
+            />
+            {errors.mobile && (
+              <p className="text-sm text-red-500">{errors.mobile}</p>
+            )}
 
             {/* Address */}
             <label className="font-semibold">Address (Optional)</label>
-            <input type="text" name="address" className="px-4 py-2 border rounded-md" value={formData.address} onChange={handleChange} />
+            <input
+              type="text"
+              name="address"
+              className="rounded-md border px-4 py-2"
+              value={formData.address}
+              onChange={handleChange}
+            />
 
             {/* Frontliner */}
             <label className="font-semibold">Frontliner Name *</label>
-            <select name="frontlinerName" className="px-4 py-2 border rounded-md" value={formData.frontlinerName} onChange={handleChange}>
+            <select
+              name="frontlinerid"
+              className="rounded-md border px-4 py-2"
+              value={formData.frontlinerid}
+              onChange={handleChange}
+              disabled={isLoading} // optional if you want to disable while loading
+            >
               <option value="">Select Frontliner Name</option>
-              <option value="Ramesh">Ramesh</option>
-              <option value="Suresh">Suresh</option>
-              <option value="Mahesh">Mahesh</option>
-              <option value="Rajesh">Rajesh</option>
+              {frontliners.map((item) => (
+                <option key={item.id} value={item.user_id}>
+                  {item.name}
+                </option>
+              ))}
             </select>
-            {errors.frontlinerName && <p className="text-red-500 text-sm">{errors.frontlinerName}</p>}
+            {errors.frontlinerid && (
+              <p className="text-sm text-red-500">{errors.frontlinerid}</p>
+            )}
 
             {/* Profession */}
             <label className="font-semibold">Profession *</label>
-            <select name="profession" className="px-4 py-2 border rounded-md" value={formData.profession} onChange={handleChange}>
+            <select
+              name="profession"
+              className="rounded-md border px-4 py-2"
+              value={formData.profession}
+              onChange={handleChange}
+            >
               <option value="">Select Profession</option>
               <option value="Student">Student (₹100)</option>
               <option value="Job Candidate">Job Candidate (₹200)</option>
             </select>
-            {errors.profession && <p className="text-red-500 text-sm">{errors.profession}</p>}
+            {errors.profession && (
+              <p className="text-sm text-red-500">{errors.profession}</p>
+            )}
 
             {/* Class Mode */}
             <label className="font-semibold">Class Mode *</label>
-            <select name="classMode" className="px-4 py-2 border rounded-md" value={formData.classMode} onChange={handleChange}>
+            <select
+              name="classMode"
+              className="rounded-md border px-4 py-2"
+              value={formData.classMode}
+              onChange={handleChange}
+            >
               <option value="">Select Class Mode</option>
               <option value="Online">Online</option>
               <option value="Offline">Offline</option>
             </select>
-            {errors.classMode && <p className="text-red-500 text-sm">{errors.classMode}</p>}
+            {errors.classMode && (
+              <p className="text-sm text-red-500">{errors.classMode}</p>
+            )}
 
             {/* Payment Method */}
             <label className="font-semibold">Payment Method *</label>
-            <select name="paymentMethod" className="px-4 py-2 border rounded-md" value={formData.paymentMethod} onChange={handleChange}>
+            <select
+              name="paymentMethod"
+              className="rounded-md border px-4 py-2"
+              value={formData.paymentMethod}
+              onChange={handleChange}
+            >
               <option value="">Select Payment Method</option>
               <option value="Unpaid">Unpaid</option>
               <option value="Online">Online</option>
               <option value="Referral">Referral</option>
               <option value="Cash">Cash</option>
             </select>
-            {errors.paymentMethod && <p className="text-red-500 text-sm">{errors.paymentMethod}</p>}
+            {errors.paymentMethod && (
+              <p className="text-sm text-red-500">{errors.paymentMethod}</p>
+            )}
 
             {/* Submit Button */}
             <button
-              className="bg-indigo-900 hover:bg-indigo-800 text-white px-4 py-2 rounded-md disabled:opacity-50"
+              className="rounded-md bg-indigo-900 px-4 py-2 text-white hover:bg-indigo-800 disabled:opacity-50"
               onClick={handleSubmit}
               disabled={isSubmitting}
             >

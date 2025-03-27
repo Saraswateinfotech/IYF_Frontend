@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import { createDashboardAccount } from "services/authService";
 import { toast } from "react-toastify";
 
-const roles = ["Admin", "User", "Moderator"];
+const roles = ['frontliner' , 'facilitator' ];
 
 const AccountModal = ({ isOpen, closeModal }) => {
   const [formData, setFormData] = useState({
@@ -54,13 +54,13 @@ const AccountModal = ({ isOpen, closeModal }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-md z-50 p-4">
-      <div className="bg-white p-6 rounded-lg w-full max-w-lg shadow-lg relative">
+      <div className="bg-white p-6 rounded-lg w-full max-w-xl shadow-lg relative">
         {/* Close Button */}
         <button onClick={closeModal} className="absolute top-3 right-3 text-gray-700">
           <X size={20} />
         </button>
 
-        <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
+        <div className="w-full max-w-xl bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold text-center mb-4">Create Dashboard Account</h2>
           {error && <div className="bg-red-100 text-red-700 p-2 rounded mb-3">{error}</div>}
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -76,7 +76,7 @@ const AccountModal = ({ isOpen, closeModal }) => {
                 </option>
               ))}
             </select>
-            <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600" disabled={loading}>
+            <button type="submit" className="w-full bg-blue-900 text-white p-2 rounded hover:bg-blue-600" disabled={loading}>
               {loading ? "Signing Up..." : "Sign Up"}
             </button>
           </form>

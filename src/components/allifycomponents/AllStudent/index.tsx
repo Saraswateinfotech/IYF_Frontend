@@ -1,210 +1,42 @@
 
 
-// 'use client';
-
-// import { useMemo, useState } from 'react';
-// import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
-// import { useRouter } from 'next/navigation';
-
-// // Example data type
-// type Person = {
-//   id: number;
-//   name: { firstName: string; lastName: string };
-//   dob: string;
-//   mobileNumber: string;
-//   frontlinerName: string;
-//   profession: string;
-//   address?: string;
-//   paymentGateway?: string;
-//   referral?: string;
-//   chantingRound?: number;
-//   email?: string;
-//   photo?: string;
-//   rating?: number;
-//   services?: string;
-//   city: string;
-//   state: string;
-//   permanentAddress?: string;
-//   remark?: string;
-//   skill?: string;
-//   comment?: string;
-//   interest?: string;
-//   hobby?: string;
-//   roles?: string;
-//   studyField?: string;
-//   fatherOccupation?: string;
-//   fatherNumber?: string;
-//   sankalpCamp?: boolean;
-//   classMode?: string;
-//   registrationDateTime?: string;
-//   paymentMode?: string;
-//   gender?: string;
-//   role?: string;
-//   facilitatorId?: string;
-//   paymentStatus?: string;
-//   studentStatus?: string;
-//   activeStatus?: string;
-//   group: string;
-// };
-
-// // Sample data with IDs
-// const initialData: Person[] = [
-//   {
-//     id: 1,
-//     name: { firstName: 'John', lastName: 'Doe' },
-//     dob: '2000-01-01',
-//     mobileNumber: '1234567890',
-//     frontlinerName: 'Admin',
-//     profession: 'Student',
-//     address: '261 Erdman Ford',
-//     paymentGateway: 'PayPal',
-//     referral: 'Friend',
-//     chantingRound: 16,
-//     email: 'john.doe@example.com',
-//     photo: 'john.jpg',
-//     rating: 4.5,
-//     services: 'Counseling',
-//     city: 'East Daphne',
-//     state: 'Kentucky',
-//     permanentAddress: '123 Main St',
-//     remark: 'Active Student',
-//     skill: 'Programming',
-//     comment: 'Good performance',
-//     interest: 'Coding',
-//     hobby: 'Reading',
-//     roles: 'Student',
-//     studyField: 'Computer Science',
-//     fatherOccupation: 'Engineer',
-//     fatherNumber: '9876543210',
-//     sankalpCamp: true,
-//     classMode: 'Online',
-//     registrationDateTime: '2025-01-01T10:00:00',
-//     paymentMode: 'Credit Card',
-//     gender: 'Male',
-//     role: 'Participant',
-//     facilitatorId: 'FAC123',
-//     paymentStatus: 'Paid',
-//     studentStatus: 'Active',
-//     activeStatus: 'Yes',
-//     group: 'DYS-1',
-//   },
-// ];
-
-// const AllStudent = () => {
-//   const [data] = useState(initialData);
-//   const router = useRouter();
-
-//   const columns = useMemo<MRT_ColumnDef<Person>[]>(() => [
-//     { accessorKey: 'name.firstName', header: 'First Name', size: 150 },
-//     { accessorKey: 'name.lastName', header: 'Last Name', size: 150 },
-//     { accessorKey: 'dob', header: 'DOB', size: 100 },
-//     { accessorKey: 'mobileNumber', header: 'Mobile Number', size: 150 },
-//     { accessorKey: 'frontlinerName', header: 'Frontliner Name', size: 150 },
-//     { accessorKey: 'profession', header: 'Profession', size: 150 },
-//     { accessorKey: 'address', header: 'Address', size: 200 },
-//     { accessorKey: 'paymentGateway', header: 'Payment Gateway', size: 150 },
-//     { accessorKey: 'referral', header: 'Referral', size: 150 },
-//     { accessorKey: 'chantingRound', header: 'Chanting Round', size: 100 },
-//     { accessorKey: 'email', header: 'Email', size: 200 },
-//     { accessorKey: 'photo', header: 'Photo', size: 100 },
-//     { accessorKey: 'rating', header: 'Rating', size: 100 },
-//     { accessorKey: 'services', header: 'Services', size: 150 },
-//     { accessorKey: 'city', header: 'City', size: 150 },
-//     { accessorKey: 'state', header: 'State', size: 150 },
-//     { accessorKey: 'permanentAddress', header: 'Permanent Address', size: 200 },
-//     { accessorKey: 'remark', header: 'Remark', size: 200 },
-//     { accessorKey: 'skill', header: 'Skill', size: 150 },
-//     { accessorKey: 'comment', header: 'Comment', size: 200 },
-//     { accessorKey: 'interest', header: 'Interest', size: 150 },
-//     { accessorKey: 'hobby', header: 'Hobby', size: 150 },
-//     { accessorKey: 'roles', header: 'Roles', size: 150 },
-//     { accessorKey: 'studyField', header: 'Study Field', size: 150 },
-//     { accessorKey: 'fatherOccupation', header: 'Father Occupation', size: 150 },
-//     { accessorKey: 'fatherNumber', header: 'Father Number', size: 150 },
-//     { accessorKey: 'sankalpCamp', header: 'Sankalp Camp', size: 100 },
-//     { accessorKey: 'classMode', header: 'Class Mode', size: 150 },
-//     { accessorKey: 'registrationDateTime', header: 'Registration Date & Time', size: 200 },
-//     { accessorKey: 'paymentMode', header: 'Payment Mode', size: 150 },
-//     { accessorKey: 'gender', header: 'Gender', size: 100 },
-//     { accessorKey: 'role', header: 'Role', size: 150 },
-//     { accessorKey: 'facilitatorId', header: 'Facilitator ID', size: 150 },
-//     { accessorKey: 'paymentStatus', header: 'Payment Status', size: 150 },
-//     { accessorKey: 'studentStatus', header: 'Student Status', size: 150 },
-//     { accessorKey: 'activeStatus', header: 'Active Status', size: 150 },
-//     { accessorKey: 'group', header: 'Group', size: 100 },
-//     {
-//       accessorKey: 'edit',
-//       header: 'Edit',
-//       size: 100,
-//       Cell: ({ row }) => (
-//         <button
-//           className='px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600'
-//           onClick={() =>
-//             router.push(`/admin/allstudent/edit/${row.original.id}?data=${encodeURIComponent(JSON.stringify(row.original))}`)
-//           }
-//         >
-//           Edit
-//         </button>
-//       ),
-//     },
-//   ], [router]);
-
-//   return (
-//     <div className='bg-white mt-7 p-5 mb-5 rounded-md shadow-2xl'>
-//       <MaterialReactTable
-//         columns={columns}
-//         data={data}
-//         enableSorting
-//         getRowId={(row) => row.id.toString()}
-//         enableColumnResizing
-//         enableColumnOrdering
-//         enableStickyHeader
-//         muiTableContainerProps={{ sx: { maxWidth: '100%', overflowX: 'auto' } }}
-//         muiTableBodyCellProps={{ sx: { whiteSpace: 'nowrap' } }}
-//       />
-//     </div>
-//   );
-// };
-
-// export default AllStudent;
-
-
-
 
 // 'use client';
-
 // import { useMemo, useState, useEffect } from 'react';
 // import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 // import { useRouter } from 'next/navigation';
 // import { fetchAllStudents } from 'services/apiCollection';
+// import { FiEdit } from 'react-icons/fi';
 
 // const AllStudent = () => {
 //   const [data, setData] = useState<any[]>([]);
+//   const [isLoading, setIsLoading] = useState(true);
 //   const router = useRouter();
 
 //   const columns = useMemo<MRT_ColumnDef<any>[]>(
 //     () => [
-//       { accessorKey: 'user_id', header: 'User ID' ,size: 160},
+//       { accessorKey: 'user_id', header: 'User ID', size: 160 },
 //       { accessorKey: 'name', header: 'Name' },
 //       { accessorKey: 'dob', header: 'DOB' },
 //       { accessorKey: 'mobile_number', header: 'Mobile Number' },
-//       { accessorKey: 'frontliner_name', header: 'Frontliner Name' },
 //       {
 //         accessorKey: 'edit',
 //         header: 'Edit',
 //         Cell: ({ row }) => (
 //           <button
-//             className='px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600'
-//             onClick={() =>
-//               router.push(
-//                 `/admin/allstudent/edit/${row.original.user_id}?data=${encodeURIComponent(
-//                   JSON.stringify(row.original)
-//                 )}`
-//               )
-//             }
-//           >
-//             Edit
-//           </button>
+//           className="px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-800 flex items-center gap-2"
+//           onClick={() =>
+//             router.push(
+//               `/admin/allstudent/edit/${row.original.user_id}?data=${encodeURIComponent(
+//                 JSON.stringify(row.original),
+//               )}`,
+//             )
+//           }
+//         >
+//           <FiEdit size={16} />
+//           Edit
+//         </button>
+        
 //         ),
 //       },
 //     ],
@@ -214,18 +46,25 @@
 //   useEffect(() => {
 //     const fetchData = async () => {
 //       try {
+//         setIsLoading(true);
 //         const resp = await fetchAllStudents();
 //         setData(resp.students);
 //       } catch (error) {
 //         console.error('Failed to fetch all students:', error);
+//       } finally {
+//         setIsLoading(false);
 //       }
 //     };
 
 //     fetchData();
 //   }, []);
 
+//   if (isLoading) {
+//     return <div className="mt-7 p-5">Loading...</div>;
+//   }
+
 //   return (
-//     <div className='bg-white mt-7 p-5 mb-5 rounded-md shadow-2xl'>
+//     <div className="bg-white mt-7 p-5 mb-5 rounded-md shadow-2xl">
 //       <MaterialReactTable
 //         columns={columns}
 //         data={data}
@@ -244,14 +83,23 @@
 // export default AllStudent;
 
 
+
 'use client';
 import { useMemo, useState, useEffect } from 'react';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { useRouter } from 'next/navigation';
-import { fetchAllStudents } from 'services/apiCollection';
+import {
+  fetchDashboardAccounts,
+  frontlinerStudentById,
+} from 'services/apiCollection';
+import { FiEdit } from 'react-icons/fi';
+import { Autocomplete, TextField } from '@mui/material';
+import { toast, ToastContainer } from 'react-toastify';
 
 const AllStudent = () => {
   const [data, setData] = useState<any[]>([]);
+  const [allFaiclatro, setAllFaiclatro] = useState<any[]>([]);
+  const [selectedFrontliner, setSelectedFrontliner] = useState<any>(null); // ✅ selected value
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
@@ -261,13 +109,12 @@ const AllStudent = () => {
       { accessorKey: 'name', header: 'Name' },
       { accessorKey: 'dob', header: 'DOB' },
       { accessorKey: 'mobile_number', header: 'Mobile Number' },
-      { accessorKey: 'frontliner_name', header: 'Frontliner Name' },
       {
         accessorKey: 'edit',
         header: 'Edit',
         Cell: ({ row }) => (
           <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className="px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-800 flex items-center gap-2"
             onClick={() =>
               router.push(
                 `/admin/allstudent/edit/${row.original.user_id}?data=${encodeURIComponent(
@@ -276,6 +123,7 @@ const AllStudent = () => {
               )
             }
           >
+            <FiEdit size={16} />
             Edit
           </button>
         ),
@@ -284,40 +132,89 @@ const AllStudent = () => {
     [router],
   );
 
+  const handleShow = async () => {
+    if (!selectedFrontliner) {
+      toast.error('Please select a frontliner');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const resp = await frontlinerStudentById(selectedFrontliner.user_id); // ✅ pass user_id
+      setData(resp.users);
+    } catch (error) {
+      console.error('Failed to fetch students:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchFaculties = async () => {
       try {
         setIsLoading(true);
-        const resp = await fetchAllStudents();
-        setData(resp.students);
+        const resp = await fetchDashboardAccounts();
+        setAllFaiclatro(resp);
       } catch (error) {
-        console.error('Failed to fetch all students:', error);
+        console.error('Failed to fetch all fetchDashboardAccounts:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchData();
+    fetchFaculties();
   }, []);
 
   if (isLoading) {
     return <div className="mt-7 p-5">Loading...</div>;
   }
-
+  
   return (
-    <div className="bg-white mt-7 p-5 mb-5 rounded-md shadow-2xl">
-      <MaterialReactTable
-        columns={columns}
-        data={data}
-        enableSorting
-        getRowId={(row) => row.user_id.toString()}
-        enableColumnResizing
-        enableColumnOrdering
-        enableStickyHeader
-        muiTableContainerProps={{ sx: { maxWidth: '100%', overflowX: 'auto' } }}
-        muiTableBodyCellProps={{ sx: { whiteSpace: 'nowrap' } }}
-      />
-    </div>
+    <>
+    <ToastContainer/>
+      <div className="mx-auto mt-10 mb-5 flex w-full flex-col rounded-md bg-white p-5 shadow-2xl md:flex-row">
+        <Autocomplete
+          id="frontliner-select"
+          options={allFaiclatro}
+          getOptionLabel={(option) =>
+            `${option.user_id} - ${option.name} (${option.role})`
+          }
+          value={selectedFrontliner}
+          onChange={(e, value) => setSelectedFrontliner(value)} // ✅ set selected
+          className="w-full md:flex-grow"
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Select Frontliner"
+              placeholder="Search..."
+              fullWidth
+            />
+          )}
+        />
+
+        <button
+          type="button"
+          onClick={handleShow}
+          className="mt-4 rounded-lg bg-indigo-900 bg-gradient-to-br px-8 py-3.5 text-center text-lg font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 md:ml-2 md:mt-0"
+        >
+          Show
+        </button>
+      </div>
+
+      <div className="bg-white mt-7 p-5 mb-5 rounded-md shadow-2xl">
+        <MaterialReactTable
+          columns={columns}
+          data={data}
+          enableSorting
+          getRowId={(row) => row.user_id.toString()}
+          enableColumnResizing
+          enableColumnOrdering
+          enableStickyHeader
+          muiTableContainerProps={{ sx: { maxWidth: '100%', overflowX: 'auto' } }}
+          muiTableBodyCellProps={{ sx: { whiteSpace: 'nowrap' } }}
+        />
+      </div>
+    </>
   );
 };
 
