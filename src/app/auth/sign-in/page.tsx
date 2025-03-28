@@ -167,7 +167,7 @@ function SignInDefault() {
                     value={formData.userId}
                     onChange={handleChange}
                     required
-                    placeholder="*******"
+                    placeholder="Like .HH00000"
                     className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 
                     focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400 
                     dark:focus:border-blue-400"
@@ -186,7 +186,7 @@ function SignInDefault() {
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    placeholder="Min. 8 characters"
+                    placeholder="*******"
                     className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 
                     focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400 
                     dark:focus:border-blue-400"

@@ -18,6 +18,10 @@ const DasAccounts = () => {
   const [accounts, setAccounts] = useState([]);
   const [isLoading, setIsLoading] = useState(true); //  loading state
 
+  const role = localStorage.getItem('role');
+
+
+
     useEffect(() => {
       const fetchData = async () => {
         try {
@@ -63,6 +67,9 @@ const DasAccounts = () => {
   return (
     <>
       <ToastContainer position="top-right" reverseOrder={false} />
+      {role === 'frontliner'?(
+        <> your not allow </>
+      ):(
 
       <div className="mt-8">
         <div className="mb-4 flex items-center justify-end">
@@ -167,6 +174,7 @@ const DasAccounts = () => {
           closeModal={() => setIsModalOpen(false)}
         />
       </div>
+      )}
     </>
   );
 };

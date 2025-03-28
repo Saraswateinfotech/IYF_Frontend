@@ -150,24 +150,29 @@
 
 'use client';
 import { useEffect, useState } from 'react';
-import { IoMdHome } from 'react-icons/io';
-import { IoDocuments } from 'react-icons/io5';
-import { MdBarChart } from 'react-icons/md';
-import Widget from 'components/widget/Widget';
 import CallingSystem from 'components/allifycomponents/callingSystem';
 import AssignedCalling from 'components/allifycomponents/callingSystem/AssignedCalling';
 import { getdashboardReport } from 'services/apiCollection';
+import FrontlinerReport from 'components/allifycomponents/FrontlinerReport';
+import FrontlinerCallingSystem from 'components/allifycomponents/callingSystem/Frontliner';
+import { FaCalendarCheck, FaClock, FaUsers, FaWallet } from 'react-icons/fa6';
 
 const Dashboard = () => {
   const [report, setReport] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const role = localStorage.getItem('role');
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    const storedRole = localStorage.getItem('role');
+    setRole(storedRole);
+  }, []);
+
   useEffect(() => {
     const fetchReport = async () => {
       try {
         const data = await getdashboardReport();
-        setReport(data[0]); // Assuming first row is the data
+        setReport(data[0]);
       } catch (err) {
         console.error('Failed to fetch dashboard report:', err);
       } finally {
@@ -181,44 +186,85 @@ const Dashboard = () => {
   if (loading) return <div className="p-4">Loading dashboard...</div>;
 
   return (
-    <div className="mt-8">
-      <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
-        <Widget
-          icon={<MdBarChart className="h-7 w-7" />}
-          title={'Total Amount'}
-          subtitle={report.total_amount || 0}
-        />
-        <Widget
-          icon={<IoDocuments className="h-6 w-6" />}
-          title={'Pending Amount'}
-          subtitle={report.pending_amount || 0}
-        />
-        <Widget
-          icon={<MdBarChart className="h-7 w-7" />}
-          title={'Total Register'}
-          subtitle={report.total_register || 0}
-        />
-        <Widget
-          icon={<MdBarChart className="h-7 w-7" />}
-          title={'Weekly Total Registered'}
-          subtitle={report.weekly_total_registered_student_number || 0}
-        />
-      </div>
-
-      <div className="mt-10">
-        <CallingSystem />
-      </div>
-      {role === 'coordinator' ? (
+    <>
+      <div className="mt-8">
         <>
-          <div className="mt-14">
-            <AssignedCalling />
+          <div className="mt-8">
+            {role === 'coordinator' ? (
+              <div></div>
+            ) : role === 'frontliner' ? (
+              <>
+                <div className="mt-14">
+                  <FrontlinerReport />
+                </div>
+                <div className="mt-14">
+                  <FrontlinerCallingSystem />
+                </div>
+                <div className="mt-14">
+                  <AssignedCalling />
+                </div>
+              </>
+            ) : (
+              <div>
+                <h2 className="mb-3 text-lg font-bold dark:text-white">
+                  Dashboard Report
+                </h2>
+                
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+  {/* Total Registered */}
+  <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg flex items-center space-x-4">
+    <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
+      <FaUsers className="text-blue-500 dark:text-blue-300" size={24} />
+    </div>
+    <div>
+      <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">Total Registered</h3>
+      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{report.total_register}</p>
+    </div>
+  </div>
+
+  {/* Total Amount */}
+  <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg flex items-center space-x-4">
+    <div className="p-3 bg-green-100 dark:bg-green-900 rounded-full">
+      <FaWallet className="text-green-500 dark:text-green-300" size={24} />
+    </div>
+    <div>
+      <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">Total Amount</h3>
+      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{report.total_amount}</p>
+    </div>
+  </div>
+
+  {/* Pending Amount */}
+  <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg flex items-center space-x-4">
+    <div className="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full">
+      <FaClock className="text-yellow-500 dark:text-yellow-300" size={24} />
+    </div>
+    <div>
+      <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">Pending Amount</h3>
+      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{report.pending_amount}</p>
+    </div>
+  </div>
+
+  {/* Weekly Registered */}
+  <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg flex items-center space-x-4">
+    <div className="p-3 bg-purple-100 dark:bg-purple-900 rounded-full">
+      <FaCalendarCheck className="text-purple-500 dark:text-purple-300" size={24} />
+    </div>
+    <div>
+      <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">Weekly Registered</h3>
+      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{report.weekly_total_registered_student_number}</p>
+    </div>
+  </div>
+</div>
+
+                <div className="mt-10">
+                  <CallingSystem />
+                </div>
+              </div>
+            )}
           </div>
         </>
-      ) : (
-        <>
-        </>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 
