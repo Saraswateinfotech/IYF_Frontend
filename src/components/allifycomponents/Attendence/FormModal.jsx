@@ -7,10 +7,18 @@ import 'react-toastify/dist/ReactToastify.css';
 import Script from 'next/script';
 import {
   submitRegistrationForm,
-  fetchDashboardAccounts,
 } from 'services/apiCollection';
+import { useDashboardContext } from 'contexts/DashboardContext';
 
 const RegistrationForm = ({ isOpen, closeModal }) => {
+  const { triggerUpdate } = useDashboardContext();  
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+ // Retrieve frontliner details from localStorage
+ const frontlinerName = localStorage.getItem('name'); 
+ const frontlinerId = localStorage.getItem('frontlinerId'); 
+
   const [formData, setFormData] = useState({
     name: '',
     dob: '',
@@ -24,28 +32,6 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
     razorpay_payment_id: '',
   });
 
-  const [frontliners, setFrontliners] = useState([]); // Will store the list of frontliners from API
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Fetching frontliner data on mount
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const data = await fetchDashboardAccounts();
-        setFrontliners(data); // Store the fetched frontliners
-      } catch (err) {
-        console.error('Error fetching accounts:', err);
-        toast.error('Failed to load accounts. Please try again.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const resetForm = () => {
     setFormData({
@@ -129,8 +115,11 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
       try {
         await submitRegistrationForm(updatedForm);
         toast.success('Form submitted successfully!');
-        resetForm();
-        closeModal();
+        triggerUpdate();  
+        setTimeout(() => {
+          resetForm();
+          closeModal();
+        }, 3000);
       } catch (error) {
         toast.error('Failed to submit form');
       } finally {
@@ -169,8 +158,12 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
               razorpay_payment_id: response.razorpay_payment_id,
             });
             toast.success('Payment successful and form submitted!');
-            resetForm();
-            closeModal();
+            triggerUpdate();  
+            setTimeout(() => {
+              resetForm();
+              closeModal();
+            }, 3000); // Wait for 3 seconds before closing the modal
+
           } catch (error) {
             toast.error('Form submission failed after payment!');
           }
@@ -257,14 +250,11 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
               className="rounded-md border px-4 py-2"
               value={formData.frontlinerid}
               onChange={handleChange}
-              disabled={isLoading} // optional if you want to disable while loading
             >
               <option value="">Select Frontliner Name</option>
-              {frontliners.map((item) => (
-                <option key={item.id} value={item.user_id}>
-                  {item.name}
+                <option value={frontlinerId}>
+                  {frontlinerName}
                 </option>
-              ))}
             </select>
             {errors.frontlinerid && (
               <p className="text-sm text-red-500">{errors.frontlinerid}</p>

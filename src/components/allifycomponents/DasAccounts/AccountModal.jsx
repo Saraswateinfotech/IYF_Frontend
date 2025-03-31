@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
 import React, { useState } from "react";
 import { X } from "lucide-react";
 import { createDashboardAccount } from "services/authService";
 import { toast } from "react-toastify";
 
-const roles = ['frontliner' , 'facilitator' ];
+const roles = ['frontliner', 'facilitator'];
 
-const AccountModal = ({ isOpen, closeModal }) => {
+const AccountModal = ({ isOpen, closeModal, fetchAccounts }) => {
   const [formData, setFormData] = useState({
     name: "",
     phone_number: "",
@@ -38,6 +38,9 @@ const AccountModal = ({ isOpen, closeModal }) => {
       );
 
       toast.success(response.message || "Account created successfully!");
+
+      // Trigger the account list refresh after successful account creation
+      fetchAccounts();
 
       setTimeout(() => {
         closeModal();

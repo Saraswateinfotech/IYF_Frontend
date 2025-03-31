@@ -1,6 +1,6 @@
 import React from 'react';
 import { PiStudentBold } from 'react-icons/pi';
-import { MdHome, MdLock, MdAddTask } from 'react-icons/md';
+import { MdHome, MdLock, MdAddTask, MdCall } from 'react-icons/md';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import { IoIosMan } from 'react-icons/io';
 
@@ -10,6 +10,12 @@ const routes = [
     layout: '/admin',
     path: 'dashboard',
     icon: <MdHome className="h-6 w-6" />,
+  },
+  {
+    name: 'Assigned Calling',
+    layout: '/admin',
+    path: '/assignedCalling',
+    icon: <MdCall className="h-6 w-6" />,
   },
   {
     name: 'Attendence',
@@ -43,11 +49,11 @@ const routes = [
     path: '/dasAccounts',
     icon: <FaPeopleGroup />,
   },
-  {
-    name: 'Sign In',
-    layout: '/auth',
-    path: 'sign-in',
-    icon: <MdLock className="h-6 w-6" />,
-  },
+  // {
+  //   name: 'Sign In',
+  //   layout: '/auth',
+  //   path: 'sign-in',
+  //   icon: <MdLock className="h-6 w-6" />,
+  // },
 ];
 export default routes;
