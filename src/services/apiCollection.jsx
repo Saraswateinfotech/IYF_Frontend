@@ -186,3 +186,14 @@ export const updatePaymentStatus = async (user_id, payment_status) => {
     throw error;
   }
 };
+
+
+export const batchCreateBatch = async (formData) => {
+  try {
+    const response = await api.post('/batch/createBatch', formData); 
+    return response.data;
+  } catch (error) {
+    console.error('Error Batch create!:', error);
+    throw error;
+  }
+};
