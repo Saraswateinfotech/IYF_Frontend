@@ -24,12 +24,12 @@ const routes = [
     icon: <MdAddTask />,
   },
 
-  {
-    name: 'All Student',
-    layout: '/admin',
-    path: '/allstudent',
-    icon: <PiStudentBold />,
-  },
+  // {
+  //   name: 'All Student',
+  //   layout: '/admin',
+  //   path: '/allstudent',
+  //   icon: <PiStudentBold />,
+  // },
 
   {
     name: 'All Batches',
@@ -37,12 +37,12 @@ const routes = [
     path: '/batches',
     icon: <FaPeopleGroup />,
   },
-  {
-    name: 'Facilitators',
-    layout: '/admin',
-    path: '/facilitators',
-    icon: <IoIosMan />,
-  },
+  // {
+  //   name: 'Facilitators',
+  //   layout: '/admin',
+  //   path: '/facilitators',
+  //   icon: <IoIosMan />,
+  // },
   {
     name: 'Das-Accounts',
     layout: '/admin',
