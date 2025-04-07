@@ -202,7 +202,7 @@ const BatchDetails = () => {
   const columns = useMemo<MRT_ColumnDef<Student>[]>(() => [
     { accessorKey: 'name', header: 'Name', size: 150 },
     { accessorKey: 'mobile_number', header: 'Mobile Number', size: 200 },
-    { accessorKey: 'group_name', header: 'Group', size: 150 },
+    // { accessorKey: 'group_name', header: 'Group', size: 150 },
     { accessorKey: 'profession', header: 'Profession', size: 150 },
     // {
     //   accessorKey: 'edit',

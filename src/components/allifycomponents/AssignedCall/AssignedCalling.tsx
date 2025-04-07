@@ -75,7 +75,7 @@ const AssignedCalling = () => {
       Cell: ({ row }) => (
         <a
           href={`tel:${row.original.mobile_number}`}
-          className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-800 transition duration-300 ease-in-out transform hover:scale-105"
+          className="flex items-center space-x-4 px-4 py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-800 transition duration-300 ease-in-out transform hover:scale-105"
         >
           <FaPhoneAlt className="text-xl" />
           <span className="text-sm md:text-base">{row.original.mobile_number}</span>

@@ -201,7 +201,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { IoPersonAddSharp } from 'react-icons/io5';
-import { FaCopy, FaTrash } from 'react-icons/fa';
+import { FaCopy, FaPhoneAlt, FaTrash } from 'react-icons/fa';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import AccountModal from './AccountModal';
 import {
@@ -341,7 +341,15 @@ const DasAccounts = () => {
                         className="border-t transition hover:bg-gray-50 dark:hover:bg-gray-700"
                       >
                         <td className="p-4">{account.name}</td>
-                        <td className="p-4">{account.phone_number}</td>
+                        <td className="p-4">
+                        <a
+          href={`tel:${account.mobile_number}`}
+          className="flex items-center space-x-4 px-4 py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-800 transition duration-300 ease-in-out transform hover:scale-105"
+        >
+          <FaPhoneAlt className="text-xl" />
+          <span className="text-sm md:text-base">{account.phone_number}</span>
+        </a>
+                        </td>
                         <td className="p-4">{account.role}</td>
                         <td className="flex items-center gap-2 p-3">
                           <span className="px-2 py-1">{account.user_id}</span>
