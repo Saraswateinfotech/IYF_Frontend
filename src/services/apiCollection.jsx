@@ -285,3 +285,16 @@ export const getStudentGroupWise = async (facilitatorId, groupname) => {
     throw error;
   }
 };
+
+
+export const getGroupUserCount = async (facilitatorId) => {
+  try {
+    const response = await api.post('/students/getGroupUserCount', {
+      facilitatorId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error getGroupUserCount :', error);
+    throw error;
+  }
+};

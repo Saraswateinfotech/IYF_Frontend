@@ -881,20 +881,6 @@ const FrontlinerCallingPage = () => {
   const allstudentColumns = useMemo<MRT_ColumnDef<Student>[]>(
     () => [
       { accessorKey: 'name', header: 'Name', size: 180 },
-      {
-        accessorKey: 'mobile_number',
-        header: 'Phone Number',
-        size: 80,
-        Cell: ({ row }) => (
-          <a
-            href={`tel:${row.original.mobile_number}`}
-            className="flex transform items-center space-x-4 rounded-lg bg-indigo-900 px-4 py-2 text-white transition duration-300 ease-in-out hover:scale-105 hover:bg-indigo-800"
-          >
-            <FaPhoneAlt className="text-xl" />
-            <span className="text-sm md:text-base">{row.original.mobile_number}</span>
-          </a>
-        ),
-      },
       { accessorKey: 'payment_mode', header: 'Payment Mode', size: 80 },
       { accessorKey: 'registration_date', header: 'Registration Date', size: 80 },
       {
@@ -937,6 +923,20 @@ const FrontlinerCallingPage = () => {
           );
         },
       },
+      {
+        accessorKey: 'mobile_number',
+        header: 'Phone Number',
+        size: 80,
+        Cell: ({ row }) => (
+          <a
+            href={`tel:${row.original.mobile_number}`}
+            className="flex transform items-center space-x-4 rounded-lg bg-indigo-900 px-4 py-2 text-white transition duration-300 ease-in-out hover:scale-105 hover:bg-indigo-800"
+          >
+            <FaPhoneAlt className="text-xl" />
+            <span className="text-sm md:text-base">{row.original.mobile_number}</span>
+          </a>
+        ),
+      },
     ],
     [],
   );
@@ -959,6 +959,7 @@ const FrontlinerCallingPage = () => {
           return <span>{statusMap[value] || value}</span>;
         },
       },
+      { accessorKey: 'student_status_date', header: 'Last Calling Date' },
       {
         accessorKey: 'response',
         header: 'Calling Response',
@@ -975,7 +976,6 @@ const FrontlinerCallingPage = () => {
           </button>
         ),
       },
-      { accessorKey: 'student_status_date', header: 'Last Calling Date' },
       {
         accessorKey: 'mobile_number',
         header: 'Phone Number',
