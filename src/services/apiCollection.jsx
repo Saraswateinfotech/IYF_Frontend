@@ -135,7 +135,7 @@ export const frontlinerStudentByIdOfcallingId = async (frontliner_id) => {
 
 export const getdashboardReport = async () => {
   try {
-    const response = await api.get(`/dashboard/dashboard-report`);
+    const response = await api.get(`/dashboar/dashboard-report`);
     return response.data;
   } catch (error) {
     console.error(
@@ -161,7 +161,7 @@ export const updateStudentStatus = async (useId, studentStatus) => {
 
 export const getFrontlinerReport = async (calling_id) => {
   try {
-    const response = await api.get(`/dashboard/frontliner-report/${calling_id}`);
+    const response = await api.get(`/dashboar/frontliner-report/${calling_id}`);
     return response.data;
   } catch (error) {
     console.error(
@@ -273,15 +273,15 @@ export const updateStudentGroupWiseName = async (user_id, newGroupName) => {
     throw error;
   }
 };
-export const getStudentGroupWise = async (facilitatorId, groupname) => {
+export const getFrontlinerdetailReport = async (facilitatorId, group_name) => {
   try {
-    const response = await api.post('/attendance/getStudentGroupWise', {
+    const response = await api.post('/attendance/getFrontlinerdetailReport', {
       facilitatorId,
-      groupname,
+      group_name,
     });
     return response.data;
   } catch (error) {
-    console.error('Error getStudentGroupWise :', error);
+    console.error('Error getFrontlinerdetailReport :', error);
     throw error;
   }
 };
@@ -295,6 +295,25 @@ export const getGroupUserCount = async (facilitatorId) => {
     return response.data;
   } catch (error) {
     console.error('Error getGroupUserCount :', error);
+    throw error;
+  }
+};
+
+export const getStudentClassReport = async (user_id) => {
+  try {
+    const res = await api.post('/attendance/getStudentClassReport', { user_id });
+    return res.data;
+  } catch (error) {
+    console.error('Error fetching class report:', error);
+    throw error;
+  }
+};
+export const getStudentReport = async (groupName,month,year) => {
+  try {
+    const res = await api.post('/attendance/getStudentReport', { groupName,month,year });
+    return res.data;
+  } catch (error) {
+    console.error('Error fetching class getStudentReport:', error);
     throw error;
   }
 };

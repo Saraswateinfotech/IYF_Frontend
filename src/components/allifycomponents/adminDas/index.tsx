@@ -1,297 +1,443 @@
+
+
+
 // 'use client';
 
 // import { useEffect, useMemo, useState } from 'react';
-// import { useRouter } from 'next/navigation';
 // import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
-// import { toast, ToastContainer } from 'react-toastify';
-// import {
-//   fetchAllFacilitatorOrFrontliner,
-//   getdashboardReport,
-// } from 'services/apiCollection';
-// import Reports from '../Reports';
 // import { FaPhoneAlt } from 'react-icons/fa';
+// import { getStudentReport } from 'services/apiCollection';
 
-// type Frontliner = {
-//   user_id: number;
-//   name: string;
+// type AttendanceEntry = {
+//   class_date: string;
+//   attendance_count: number;
+//   total_students: number;
+//   attendance_ratio: string;
+// };
+
+// type FacilitatorReport = {
+//   facilitatorId: string;
+//   facilitator_name: string;
 //   phone_number: string;
-//   role: string;
+//   report: AttendanceEntry[];
+// };
+
+// const groupList = [
+//   'Nachiketa',
+//   'Bhima',
+//   'Arjun',
+//   'Shadev',
+//   'Nakul',
+//   'Jagganath',
+//   'DYS',
+// ];
+
+// const monthList = [
+//   'January', 'February', 'March', 'April',
+//   'May', 'June', 'July', 'August',
+//   'September', 'October', 'November', 'December',
+// ];
+
+// const currentYear = new Date().getFullYear();
+// const yearList = [currentYear - 1, currentYear, currentYear + 1];
+
+// const getCurrentMonth = () => {
+//   const now = new Date();
+//   return now.getMonth() + 1; // Get current month as a number (1-12)
 // };
 
 // const AdminDas = () => {
-//   const [frontliners, setFrontliners] = useState<Frontliner[]>([]);
+//   const [data, setData] = useState<FacilitatorReport[]>([]);
+//   const [progressDates, setProgressDates] = useState<string[]>([]);
 //   const [isLoading, setIsLoading] = useState(false);
-//   const [report, setReport] = useState<any>(null);
+//   const [groupName, setGroupName] = useState('Nachiketa');
+//   const [month, setMonth] = useState(getCurrentMonth()); // Initialize as number
+//   const [year, setYear] = useState(currentYear);
 
-//   const router = useRouter();
+//   const fetchReport = async (group: string, month: number, year: number) => {
+//     setIsLoading(true);
+//     try {
+//       // Pass the numeric month (1 = January, 2 = February, ..., 12 = December)
+//       const res = await getStudentReport(group, month, year);
+//       const reportData: FacilitatorReport[] = res.data;
 
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         setIsLoading(true);
-//         const [frontlinerRes, dashboardReport] = await Promise.all([
-//           fetchAllFacilitatorOrFrontliner(),
-//           getdashboardReport(),
-//         ]);
+//       // Get all unique dates from nested report arrays
+//       const uniqueDatesSet = new Set<string>();
+//       reportData.forEach((f) => {
+//         f.report.forEach((entry) => {
+//           const dateStr = new Date(entry.class_date).toLocaleDateString('en-IN');
+//           uniqueDatesSet.add(dateStr);
+//         });
+//       });
 
-//         // Filter to only include items where role is 'frontliner'
-//         const filteredFrontliners = frontlinerRes.filter(
-//           (item: Frontliner) => item.role === 'frontliner'
-//         );
-//         setFrontliners(filteredFrontliners);
+//       const sortedDates = Array.from(uniqueDatesSet).sort((a, b) => {
+//         return new Date(a).getTime() - new Date(b).getTime();
+//       });
 
-//         setReport(dashboardReport[0]);
-//       } catch (err) {
-//         console.error('Error fetching data:', err);
-//         toast.error('Failed to load data');
-//       } finally {
-//         setIsLoading(false);
-//       }
-//     };
-
-//     fetchData();
-//   }, []);
-
-//   const frontlinerColumns = useMemo<MRT_ColumnDef<Frontliner>[]>(() => [
-//     { accessorKey: 'name', header: 'Name' },
-//     { accessorKey: 'phone_number', header: 'Phone Number',Cell: ({ row }) => (
-//                     <a
-//                       href={`tel:${row.original.phone_number}`}
-//                       onClick={(e) => e.stopPropagation()}
-//                       className="inline-flex items-center space-x-5 px-6   py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-800 transition duration-300 ease-in-out transform hover:scale-105"
-//                     >
-//                       <FaPhoneAlt className="text-xl" />
-//                       <span className="text-sm md:text-base">{row.original.phone_number}</span>
-//                     </a>
-//                   ), },
-//     // { accessorKey: 'role', header: 'Role' },
-//   ], []);
-
-//   const handleFrontlinerClick = (frontliner: Frontliner) => {
-//     router.push(`/admin/dashboard/facilitator-frontliner/${frontliner.user_id}`);
+//       setProgressDates(sortedDates);
+//       setData(reportData);
+//     } catch (error) {
+//       console.error('Error fetching facilitator report:', error);
+//     } finally {
+//       setIsLoading(false);
+//     }
 //   };
 
-//   if (isLoading) {
-//     return <div className="mt-6 px-6 text-lg dark:bg-white">Loading...</div>;
-//   }
+//   useEffect(() => {
+//     fetchReport(groupName, month, year); // Ensure month is passed as a number
+//   }, [groupName, month, year]);
+
+//   const columns = useMemo<MRT_ColumnDef<FacilitatorReport>[]>(() => {
+//     return [
+//       {
+//         accessorKey: 'facilitator_name',
+//         header: 'Name',
+//         size: 200,
+//       },
+//       {
+//         accessorKey: 'phone_number',
+//         header: 'Phone Number',
+//         size: 180,
+//         Cell: ({ row }) => (
+//           <a
+//             href={`tel:${row.original.phone_number}`}
+//             className="flex transform items-center space-x-4 rounded-lg bg-indigo-900 px-4 py-2 text-white transition duration-300 ease-in-out hover:scale-105 hover:bg-indigo-800"
+//           >
+//             <FaPhoneAlt className="text-xl" />
+//             <span className="text-sm md:text-base">{row.original.phone_number}</span>
+//           </a>
+//         ),
+//       },
+//       ...progressDates.map((date) => ({
+//         header: date,
+//         id: date,
+//         accessorFn: (row: FacilitatorReport) => {
+//           const entry = row.report.find((r) => {
+//             const formatted = new Date(r.class_date).toLocaleDateString('en-IN');
+//             return formatted === date;
+//           });
+//           return entry?.attendance_ratio || '-';
+//         },
+//         Cell: ({ cell }) => (
+//           <span className="inline-block rounded bg-blue-100 px-2 py-1 text-blue-800">
+//             {cell.getValue() as string} {/* Cast to string to resolve the unknown type error */}
+//           </span>
+//         ),
+//       })),
+//       {
+//         id: 'average',
+//         header: 'Monthly Avg',
+//         accessorFn: (row: FacilitatorReport) => {
+//           const total = row.report.reduce((acc, r) => acc + r.attendance_count, 0);
+//           const count = row.report.length;
+//           return count ? Math.round(total / count).toString() : '-';
+//         },
+//         Cell: ({ cell }) => (
+//           <span className="inline-block rounded bg-green-100 px-2 py-1 text-green-800">
+//             {cell.getValue() as string} {/* Cast to string to resolve the unknown type error */}
+//           </span>
+//         ),
+//       },
+//     ];
+//   }, [progressDates]);
 
 //   return (
-//     <>
-//       <ToastContainer />
-//       <div className="mt-8">
-//         <h2 className="mb-5 text-lg font-bold dark:text-white">
-//         Admin Report / Overall Report
-//         </h2>
+//     <div className="mt-10">
+//       {/* Filters */}
+//       <form
+//         onSubmit={(e) => {
+//           e.preventDefault();
+//           fetchReport(groupName, month, year); // Pass month as a number
+//         }}
+//         className="mb-2 flex flex-wrap justify-end gap-2"
+//       >
+//         {/* Group Dropdown */}
+//         <select
+//           value={groupName}
+//           onChange={(e) => setGroupName(e.target.value)}
+//           className="rounded-lg w-48 border border-gray-300 bg-gray-100 p-2 text-sm text-gray-900"
+//         >
+//           {groupList.map((group) => (
+//             <option key={group} value={group}>
+//               {group}
+//             </option>
+//           ))}
+//         </select>
 
-//         <Reports report={report} />
+//         {/* Month Dropdown */}
+//         <select
+//           value={month}
+//           onChange={(e) => setMonth(Number(e.target.value))}
+//           className="rounded-lg w-48 border border-gray-300 bg-gray-100 p-2 text-sm text-gray-900"
+//         >
+//           {monthList.map((m, index) => (
+//             <option key={index} value={index + 1}> {/* month as 1-based index */}
+//               {m}
+//             </option>
+//           ))}
+//         </select>
 
-//         <div className="mb-5 mt-0 rounded-md bg-white p-5 shadow-2xl">
-//           <MaterialReactTable
-//             columns={frontlinerColumns}
-//             data={frontliners}
-//             enableSorting
-//             muiTableHeadCellProps={{
-//               sx: {
-//                 backgroundColor: '#312e81',
-//                 color: 'white',
-//                 fontSize: '16px',
-//                 fontWeight: 'bold',
-//                 borderRadius: '2px',
-//               },
-//             }}
-//             muiTableBodyRowProps={({ row }) => ({
-//               onClick: () => handleFrontlinerClick(row.original),
-//               style: { cursor: 'pointer' },
-//             })}
-//           />
-//         </div>
+//         {/* Year Dropdown */}
+//         <select
+//           value={year}
+//           onChange={(e) => setYear(Number(e.target.value))}
+//           className="rounded-lg w-32 border border-gray-300 bg-gray-100 p-2 text-sm text-gray-900"
+//         >
+//           {yearList.map((y) => (
+//             <option key={y} value={y}>
+//               {y}
+//             </option>
+//           ))}
+//         </select>
+
+//         {/* <button
+//           type="submit"
+//           className="rounded-lg bg-blue-900 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800"
+//         >
+//           Apply Filter
+//         </button> */}
+//       </form>
+
+//       <div className="rounded-lg bg-white p-5 shadow-xl">
+//         <MaterialReactTable
+//           columns={columns}
+//           data={data}
+//           enableSorting
+//           state={{ isLoading }}
+//           getRowId={(row) =>
+//             row?.facilitatorId ? row.facilitatorId.toString() : Math.random().toString()
+//           }
+//           muiTablePaperProps={{ sx: { overflow: 'visible !important' } }}
+//           muiTableBodyCellProps={{ sx: { overflow: 'visible' } }}
+//         />
 //       </div>
-//     </>
+//     </div>
 //   );
 // };
 
 // export default AdminDas;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 'use client';
 
-import { useEffect, useState } from 'react';
-import FacilitatorReportDas from './FacilitatorReportDas';
-// import { getGroupUserCount, getStudentGroupWise } from 'services/apiCollection';
+import { useEffect, useMemo, useState } from 'react';
+import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
+import { FaPhoneAlt } from 'react-icons/fa';
+import { getStudentReport } from 'services/apiCollection';
+
+type AttendanceEntry = {
+  class_date: string;
+  attendance_count: number;
+  total_students: number;
+  attendance_ratio: string;
+};
+
+type FacilitatorReport = {
+  facilitatorId: string;
+  facilitator_name: string;
+  phone_number: string;
+  report: AttendanceEntry[];
+};
 
 const groupList = [
-  'DYS',
-  'Jagganath',
   'Nachiketa',
+  'Bhima',
+  'Arjun',
   'Shadev',
   'Nakul',
-  'Arjun',
-  'GourangSabha',
-  'Bhima',
+  'Jagganath',
+  'DYS',
 ];
 
 const monthList = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
+  'January', 'February', 'March', 'April',
+  'May', 'June', 'July', 'August',
+  'September', 'October', 'November', 'December',
 ];
 
-// 🔹 Dummy Data for Testing
-const dummyReport = [
-  {
-    date: '2025-01-03',
-    attended: 3,
-    total_students: 15,
-    total_classes: 5,
-  },
-  {
-    date: '2025-01-10',
-    attended: 10,
-    total_students: 15,
-    total_classes: 5,
-  },
-  {
-    date: '2025-01-17',
-    attended: 12,
-    total_students: 15,
-    total_classes: 5,
-  },
-  {
-    date: '2025-01-24',
-    attended: 9,
-    total_students: 15,
-    total_classes: 5,
-  },
-];
-const dummyNewDYSCount = 4;
+const currentYear = new Date().getFullYear();
+const yearList = [currentYear - 1, currentYear, currentYear + 1];
 
-const getCurrentMonthName = () => {
+const getCurrentMonth = () => {
   const now = new Date();
-  return monthList[now.getMonth()];
+  return now.getMonth() + 1; // Get current month as a number (1-12)
 };
 
 const AdminDas = () => {
-  const facilitatorId =
-    typeof window !== 'undefined' ? localStorage.getItem('frontlinerId') : null;
-
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<FacilitatorReport[]>([]); 
+  const [progressDates, setProgressDates] = useState<string[]>([]); 
   const [isLoading, setIsLoading] = useState(false);
-  const [groupName, setGroupName] = useState('DYS');
-  const [month, setMonth] = useState(getCurrentMonthName());
+  const [groupName, setGroupName] = useState('Nachiketa');
+  const [month, setMonth] = useState(getCurrentMonth()); 
+  const [year, setYear] = useState(currentYear);
 
-  const fetchGetStudentGroupWise = async (
-    group_name: string,
-    month: string,
-  ) => {
-    if (!facilitatorId) return;
+  const fetchReport = async (group: string, month: number, year: number) => {
     setIsLoading(true);
     try {
-      await new Promise((res) => setTimeout(res, 500));
-      setData(
-        dummyReport.map((item) => ({
-          ...item,
-          newStudentsInDYS: dummyNewDYSCount,
-        })),
-      );
-    } catch (err) {
-      console.log('Failed to fetch students by group');
+      const res = await getStudentReport(group, month, year);
+      const reportData: FacilitatorReport[] = res.data;
+
+      const uniqueDatesSet = new Set<string>();
+      reportData.forEach((f) => {
+        f.report.forEach((entry) => {
+          const dateStr = new Date(entry.class_date).toLocaleDateString('en-IN');
+          uniqueDatesSet.add(dateStr);
+        });
+      });
+
+      const sortedDates = Array.from(uniqueDatesSet).sort((a, b) => {
+        return new Date(a).getTime() - new Date(b).getTime();
+      });
+
+      setProgressDates(sortedDates);
+      setData(reportData);
+    } catch (error) {
+      console.error('Error fetching facilitator report:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (groupName && month) {
-      fetchGetStudentGroupWise(groupName, month);
-    }
-  }, [groupName, month]);
+    fetchReport(groupName, month, year);
+  }, [groupName, month, year]);
 
-  if (isLoading) {
-    return <div className="mt-6 px-6 text-lg dark:bg-white">Loading...</div>;
-  }
+  const columns = useMemo<MRT_ColumnDef<FacilitatorReport>[]>(() => {
+    return [
+      {
+        accessorKey: 'facilitator_name',
+        header: 'Name',
+        size: 200,
+      },
+      {
+        accessorKey: 'phone_number',
+        header: 'Phone Number',
+        size: 180,
+        Cell: ({ row }) => (
+          <a
+            href={`tel:${row.original.phone_number}`}
+            className="flex transform items-center space-x-4 rounded-lg bg-indigo-900 px-4 py-2 text-white transition duration-300 ease-in-out hover:scale-105 hover:bg-indigo-800"
+          >
+            <FaPhoneAlt className="text-xl" />
+            <span className="text-sm md:text-base">{row.original.phone_number}</span>
+          </a>
+        ),
+      },
+      ...progressDates.map((date) => ({
+        header: date,
+        id: date,
+        accessorFn: (row: FacilitatorReport) => {
+          const entry = row.report.find((r) => {
+            const formatted = new Date(r.class_date).toLocaleDateString('en-IN');
+            return formatted === date;
+          });
+          return entry?.attendance_ratio || '-';
+        },
+        Cell: ({ cell }) => (
+          <span className="inline-block rounded bg-blue-100 px-2 py-1 text-blue-800">
+            {cell.getValue() as string}
+          </span>
+        ),
+      })),
+      {
+        id: 'average',
+        header: 'Monthly Avg',
+        accessorFn: (row: FacilitatorReport) => {
+          const total = row.report.reduce((acc, r) => acc + r.attendance_count, 0);
+          const count = row.report.length;
+          return count ? Math.round(total / count).toString() : '-';
+        },
+        Cell: ({ cell }) => (
+          <span className="inline-block rounded bg-green-100 px-2 py-1 text-green-800">
+            {cell.getValue() as string}
+          </span>
+        ),
+      },
+    ];
+  }, [progressDates]);
+
+  // Handle row click to pass userId
+  const handleRowClick = (facilitatorId: string) => {
+    console.log('Facilitator ID:', facilitatorId);
+    // You can now send the facilitatorId wherever you need, e.g., make a new API request
+    // For example, redirecting to a detailed page or opening a modal
+  };
 
   return (
-    <>
-      <div className="mt-10">
-        <h2 className="mb-5 text-lg font-bold dark:text-white">
-          Admin Report / Overall Report
-        </h2>
+    <div className="mt-10">
+      {/* Filters */}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          fetchReport(groupName, month, year);
+        }}
+        className="mb-2 flex flex-wrap justify-end gap-2"
+      >
+        <select
+          value={groupName}
+          onChange={(e) => setGroupName(e.target.value)}
+          className="rounded-lg w-48 border border-gray-300 bg-gray-100 p-2 text-sm text-gray-900"
+        >
+          {groupList.map((group) => (
+            <option key={group} value={group}>
+              {group}
+            </option>
+          ))}
+        </select>
 
-        {/* Group + Month Selector */}
-        <div className="mb-4 mt-10 flex justify-end">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              fetchGetStudentGroupWise(groupName, month);
-            }}
-            className="flex max-w-lg flex-wrap justify-end gap-2 "
-          >
-            <select
-              value={groupName}
-              onChange={(e) => setGroupName(e.target.value)}
-              className="block w-48 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
-            >
-              <option disabled>Select a Group</option>
-              {groupList.map((group) => (
-                <option key={group} value={group}>
-                  {group}
-                </option>
-              ))}
-            </select>
+        <select
+          value={month}
+          onChange={(e) => setMonth(Number(e.target.value))}
+          className="rounded-lg w-48 border border-gray-300 bg-gray-100 p-2 text-sm text-gray-900"
+        >
+          {monthList.map((m, index) => (
+            <option key={index} value={index + 1}>
+              {m}
+            </option>
+          ))}
+        </select>
 
-            <select
-              value={month}
-              onChange={(e) => setMonth(e.target.value)}
-              className="block w-48 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
-            >
-              <option disabled>Select a Month</option>
-              {monthList.map((m) => (
-                <option key={m} value={m}>
-                  {m}
-                </option>
-              ))}
-            </select>
+        <select
+          value={year}
+          onChange={(e) => setYear(Number(e.target.value))}
+          className="rounded-lg w-32 border border-gray-300 bg-gray-100 p-2 text-sm text-gray-900"
+        >
+          {yearList.map((y) => (
+            <option key={y} value={y}>
+              {y}
+            </option>
+          ))}
+        </select>
+      </form>
 
-            <button
-              type="submit"
-              className="ml-1.5 rounded-lg bg-blue-900 px-4 py-2 font-medium text-white hover:bg-blue-800"
-            >
-              Show
-            </button>
-          </form>
-        </div>
-
-        {/* Result Cards */}
-        <div className="mt-2 grid grid-cols-1 gap-6 md:grid-cols-2 ">
-          {data.length === 0 ? (
-            <p className="text-gray-700 dark:text-white">No data found.</p>
-          ) : (
-            data.map((entry: any, idx: number) => (
-              <div
-                key={idx}
-                className="rounded-xl bg-gradient-to-r from-blue-900 to-indigo-700 p-5 text-white shadow-md transition-transform hover:scale-[1.02]"
-              >
-                <h3 className="text-md font-semibold">
-                  {new Date(entry.date).toLocaleDateString()} :
-                </h3>
-                <p className="mt-2 text-2xl font-bold">
-                  {entry.attended}/{entry.total_students}/{entry.total_classes}
-                </p>
-              </div>
-            ))
-          )}
-        </div>
+      <div className="rounded-lg bg-white p-5 shadow-xl">
+        <MaterialReactTable
+          columns={columns}
+          data={data}
+          enableSorting
+          state={{ isLoading }}
+          getRowId={(row) =>
+            row?.facilitatorId ? row.facilitatorId.toString() : Math.random().toString()
+          }
+          muiTablePaperProps={{ sx: { overflow: 'visible !important' } }}
+          muiTableBodyCellProps={{ sx: { overflow: 'visible' } }}
+          onRowClick={({ row }) => handleRowClick(row.original.facilitatorId)} // Handling row click
+        />
       </div>
-      <FacilitatorReportDas/>
-    </>
+    </div>
   );
 };
 

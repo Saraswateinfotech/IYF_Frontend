@@ -1,256 +1,247 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
-import { getStudentGroupWise } from 'services/apiCollection';
-import { createPortal } from 'react-dom';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { FaPhoneAlt } from 'react-icons/fa';
-import { BsThreeDotsVertical } from 'react-icons/bs';
+import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
+import { FiEdit } from 'react-icons/fi';
+import { getFrontlinerdetailReport, getStudentClassReport } from 'services/apiCollection';
 
 type Student = {
   user_id: number;
   name: string;
-  chanting_round: string;
-  action: string;
   mobile_number: string;
+  GroupRatio: string;
+  chanting_round: string;
+  progress_report_data: number[];
 };
 
-const groupList = [
-  'DYS',
-  'Jagganath',
-  'Nachiketa',
-  'Shadev',
-  'Nakul',
-  'Arjun',
-  'GourangSabha',
-  'Bhima',
+type GroupDataType = {
+  group_name: string;
+  total_users: number;
+};
+
+const monthList = [
+  'January', 'February', 'March', 'April',
+  'May', 'June', 'July', 'August',
+  'September', 'October', 'November', 'December',
 ];
 
-const ActionCell = ({ row }: { row: any }) => {
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const [btnPosition, setBtnPosition] = useState({ x: 0, y: 0 });
+// Accordion component
+const DetailPanel = ({ user_id }: { user_id: number }) => {
+  const [classReport, setClassReport] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    const rect = (e.target as HTMLButtonElement).getBoundingClientRect();
-    setBtnPosition({ x: rect.right, y: rect.bottom });
-    setOpen((prev) => !prev);
-  };
+  const currentMonth = monthList[new Date().getMonth()];
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 5 }, (_, i) => `${currentYear - i}`);
+
+  const [month, setMonth] = useState(currentMonth);
+  const [year, setYear] = useState(`${currentYear}`);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (open) setOpen(false);
+    const fetchReport = async () => {
+      try {
+        const res = await getStudentClassReport(user_id);
+        setClassReport(res);
+      } catch (err) {
+        console.error('Error fetching student class report:', err);
+      } finally {
+        setLoading(false);
+      }
     };
-    if (open) window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [open]);
 
-  const handleRouteOne = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    router.push(`/admin/facilitators/attendanceReport`);
-    setOpen(false);
-  };
+    fetchReport();
+  }, [user_id]);
 
-  const handleRouteTwo = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    const dataString = encodeURIComponent(JSON.stringify(row.original));
-    router.push(
-      `/admin/batches/BatchId/edit/${row.original.user_id}?data=${dataString}`,
-    );
-    setOpen(false);
-  };
+  useEffect(() => {
+    if (!classReport || classReport.length === 0) return;
 
-  const popDownMenu = (
-    <div
-      style={{ position: 'fixed', top: btnPosition.y, left: btnPosition.x }}
-      className="z-[9999] mt-2 w-40 rounded border border-gray-200 bg-white shadow-md"
-    >
-      <button
-        onClick={handleRouteOne}
-        className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-      >
-        Attendance Report
-      </button>
-      <button
-        onClick={handleRouteTwo}
-        className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-      >
-        Edit detail
-      </button>
+    const filtered = classReport.filter((entry) => {
+      const date = new Date(entry.class_date);
+      const entryMonth = monthList[date.getMonth()];
+      const entryYear = date.getFullYear().toString();
+      return entryMonth === month && entryYear === year;
+    });
+
+    setFilteredData(filtered);
+  }, [classReport, month, year]);
+
+  return (
+    <div className="rounded-md bg-blue-50 p-4 text-sm">
+      <div className="mb-6 flex gap-2 justify-end">
+        <select
+          value={month}
+          onChange={(e) => setMonth(e.target.value)}
+          className="rounded w-44 border p-2 text-sm"
+        >
+          {monthList.map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
+        <select
+          value={year}
+          onChange={(e) => setYear(e.target.value)}
+          className="rounded w-44 border p-2 text-sm"
+        >
+          {years.map((y) => (
+            <option key={y} value={y}>
+              {y}
+            </option>
+          ))}
+        </select>
+      </div>
+  
+      {loading ? (
+        <p>Loading...</p>
+      ) : filteredData.length === 0 ? (
+        <p className='flex justify-center'>No class report available for {month} {year}.</p>
+      ) : (
+        <ul className="space-y-2">
+          {filteredData.map((entry, idx) => {
+            const dateObj = new Date(entry.class_date);
+            const formattedDate = dateObj.toLocaleDateString('en-IN', {
+              day: '2-digit',
+              month: 'long',
+              year: 'numeric',
+              weekday: 'long',
+            });
+  
+            const isPresent = entry.status?.toLowerCase().includes('present');
+  
+            return (
+              <li
+                key={idx}
+                className={`flex flex-wrap md:flex-nowrap justify-between items-center gap-2 rounded p-3 shadow-sm ${
+                  isPresent ? 'bg-green-100' : 'bg-red-100'
+                }`}
+              >
+                <span className="w-full md:w-1/3 font-medium text-gray-800">{formattedDate}</span>
+  
+                <span className="w-full md:w-1/3 flex items-center gap-2 font-semibold">
+                  {/* <span
+                    className={`inline-block h-3 w-3 rounded-full ${
+                      isPresent ? 'bg-green-600' : 'bg-red-600'
+                    }`}
+                  ></span> */}
+                  {isPresent ? '✅ Present' : '❌ Absent'}
+                </span>
+  
+                <span className="w-full md:w-1/3 text-xs text-gray-600">
+                  Session: {entry.AttendanceSession || '—'}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
-
-  return (
-    <>
-      <button
-        onClick={handleToggle}
-        className="relative rounded bg-indigo-900 px-3 py-1 text-white hover:bg-indigo-800"
-      >
-        <BsThreeDotsVertical size={18} />
-      </button>
-      {open &&
-        typeof document !== 'undefined' &&
-        createPortal(popDownMenu, document.body)}
-    </>
-  );
+  
 };
 
-const FacilitatorUserReport = () => {
-  const facilitatorId =
-    typeof window !== 'undefined' ? localStorage.getItem('frontlinerId') : null;
+export default function FacilitatorUserReport({ groupData }: { groupData: GroupDataType[] }) {
+  const router = useRouter();
+  const defaultGroup = groupData[0]?.group_name || '';
+  const currentMonth = monthList[new Date().getMonth()];
 
+  const [groupName, setGroupName] = useState(defaultGroup);
   const [data, setData] = useState<Student[]>([]);
-  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [groupName, setGroupName] = useState('DYS');
-
-  const fetchGetStudentGroupWise = async (group_name: string) => {
-    if (!facilitatorId) return;
-    setIsLoading(true);
-    try {
-      const users = await getStudentGroupWise(facilitatorId, group_name);
-      setData(users.users);
-    } catch (err) {
-      console.log('Failed to fetch students by group', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [facilitatorId, setFacilitatorId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (groupName) {
-      fetchGetStudentGroupWise(groupName);
+    const id = localStorage.getItem('frontlinerId');
+    setFacilitatorId(id);
+  }, []);
+
+  const fetchData = useCallback(async () => {
+    if (!facilitatorId) return;
+    try {
+      const res = await getFrontlinerdetailReport(facilitatorId, groupName);
+      setData(res);
+    } catch (err) {
+      console.error('Failed to fetch facilitator report:', err);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groupName]);
+  }, [facilitatorId, groupName]);
 
-  const columns = useMemo<MRT_ColumnDef<Student>[]>(
-    () => [
-      {
-        accessorKey: 'name',
-        header: 'Name',
-        size: 200,
-      },
-      {
-        accessorKey: 'chanting_round',
-        header: 'Chanting',
-        size: 200,
-      },
-      // {
-      //   accessorKey: 'total_report',
-      //   header: 'Total Report',
-      //   size: 200,
-      // },
-      {
-        accessorKey: 'mobile_number',
-        header: 'Phone Number',
-        size: 150,
-        Cell: ({ row }) => (
-          <a
-            href={`tel:${row.original.mobile_number}`}
-            className="flex transform items-center space-x-4 rounded-lg bg-indigo-900 px-4 py-2 text-white transition duration-300 ease-in-out hover:scale-105 hover:bg-indigo-800"
-          >
-            <FaPhoneAlt className="text-xl" />
-            <span className="text-sm md:text-base">
-              {row.original.mobile_number}
-            </span>
-          </a>
-        ),
-      },
-      {
-        accessorKey: 'action',
-        header: 'Action',
-        size: 150,
-        Cell: ({ row }) => <ActionCell row={row} />,
-      },
-    ],
-    [],
-  );
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
-  if (isLoading) {
-    return <div className="mt-6 px-6 text-lg dark:bg-white">Loading...</div>;
-  }
+  const columns = useMemo<MRT_ColumnDef<Student>[]>(() => [
+    { accessorKey: 'name', header: 'Name' },
+    { accessorKey: 'mobile_number', header: 'Phone Number' },
+    { accessorKey: 'chanting_round', header: 'Chanting Round' },
+    { accessorKey: 'GroupRatio', header: 'Total Report' },
+    {
+      accessorKey: 'action',
+      header: 'Edit',
+      Cell: ({ row }) => (
+        <button
+          className="flex items-center gap-2 rounded bg-blue-900 px-3 py-1 text-white transition hover:bg-blue-800"
+          onClick={() =>
+            router.push(
+              `/admin/batches/BatchId/edit/${row.original.user_id}?data=${encodeURIComponent(
+                JSON.stringify(row.original),
+              )}`
+            )
+          }
+        >
+          <FiEdit size={16} />
+          Edit
+        </button>
+      ),
+    },
+  ], [router]);
 
   return (
-    <div className="mt-10">
+    <div className="mt-6">
+      <h2 className="mb-6 text-xl font-bold text-black">Facilitator User Report</h2>
 
-      {/* Group Selector */}
-      <div className="mb-4 mt-10 flex justify-end">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            fetchGetStudentGroupWise(groupName);
-          }}
-          className="flex max-w-2xl flex-wrap justify-end"
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          fetchData();
+        }}
+        className="mb-2 flex flex-wrap justify-end gap-1"
+      >
+        <select
+          value={groupName}
+          onChange={(e) => setGroupName(e.target.value)}
+          className="w-44 rounded border border-gray-300 bg-white p-2 text-sm"
         >
-          <select
-            id="groups"
-            value={groupName}
-            onChange={(e) => setGroupName(e.target.value)}
-            className="block w-48 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
-          >
-            <option disabled>Select a Group</option>
-            {groupList.map((group) => (
-              <option key={group} value={group}>
-                {group}
-              </option>
-            ))}
-          </select>
+          {groupData.map((group) => (
+            <option key={group.group_name} value={group.group_name}>
+              {group.group_name}
+            </option>
+          ))}
+        </select>
+      </form>
 
-          <button
-            type="submit"
-            className="ml-1.5 rounded-lg bg-blue-900 px-4 py-2 font-medium text-white hover:bg-blue-800"
-          >
-            Show
-          </button>
-        </form>
-      </div>
-
-      {/* Table with "accordion" detail panel and global filter */}
-      <div className="mb-5 mt-0 rounded-md bg-white p-5 shadow-2xl">
+      <div className="mx-auto max-w-7xl rounded-md bg-white p-6 shadow-xl">
         <MaterialReactTable
           columns={columns}
           data={data}
           enableSorting
-          // For "accordion" row expansion
           enableExpanding
           positionExpandColumn="last"
           renderDetailPanel={({ row }) => (
-            <div className="p-4">
-              <p>
-                This is the accordion content for <strong>{row.original.name}</strong>.
-              </p>
-              <p>Place any additional info here.</p>
-            </div>
+            <DetailPanel user_id={row.original.user_id} />
           )}
-
-          // Add top search (global filter)
           enableGlobalFilter
           positionGlobalFilter="right"
           initialState={{ showGlobalFilter: true }}
-
-          // If you also want column-level filters, uncomment:
-          // enableColumnFilters
-
-          onRowSelectionChange={setRowSelection}
-          state={{ rowSelection }}
           getRowId={(row) => row.user_id.toString()}
-          muiTablePaperProps={{
-            sx: {
-              overflow: 'visible !important',
-            },
+          muiTableHeadCellProps={{
+            sx: { backgroundColor: '#dbeafe', fontWeight: 'bold' },
           }}
           muiTableBodyCellProps={{
-            sx: {
-              overflow: 'visible',
-            },
+            sx: { backgroundColor: '#f8fafc' },
           }}
         />
       </div>
     </div>
   );
-};
-
-export default FacilitatorUserReport;
+}
