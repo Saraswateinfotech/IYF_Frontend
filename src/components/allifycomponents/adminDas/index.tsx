@@ -233,6 +233,7 @@
 
 // src/components/allifycomponents/adminDas/index.tsx
 // src/components/allifycomponents/adminDas/index.tsx
+// src/components/allifycomponents/adminDas/index.tsx
 'use client';
 import React, { useEffect, useMemo, useState } from 'react';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
@@ -254,24 +255,18 @@ type FacilitatorReport = {
 };
 
 const groupList = [
-  'Nachiketa',
-  'Bhima',
-  'Arjun',
-  'Shadev',
-  'Nakul',
-  'Jagganath',
-  'DYS',
+  'Nachiketa','Bhima','Arjun',
+  'Shadev','Nakul','Jagganath','DYS',
 ];
 
 const monthList = [
-  'January', 'February', 'March', 'April',
-  'May', 'June', 'July', 'August',
-  'September', 'October', 'November', 'December',
+  'January','February','March','April',
+  'May','June','July','August',
+  'September','October','November','December',
 ];
 
 const currentYear = new Date().getFullYear();
 const yearList = [currentYear - 1, currentYear, currentYear + 1];
-
 const getCurrentMonth = () => new Date().getMonth() + 1;
 
 const AdminDas: React.FC = () => {
@@ -282,21 +277,19 @@ const AdminDas: React.FC = () => {
   const [month, setMonth] = useState(getCurrentMonth());
   const [year, setYear] = useState(currentYear);
 
-  const fetchReport = async (group: string, month: number, year: number) => {
+  const fetchReport = async (grp: string, m: number, y: number) => {
     setIsLoading(true);
     try {
-      const res = await getStudentReport(group, month, year);
+      const res = await getStudentReport(grp, m, y);
       const reportData: FacilitatorReport[] = res.data;
-      const uniqueDates = new Set<string>();
+      const dates = new Set<string>();
       reportData.forEach(f =>
         f.report.forEach(e =>
-          uniqueDates.add(new Date(e.class_date).toLocaleDateString('en-IN'))
+          dates.add(new Date(e.class_date).toLocaleDateString('en-IN'))
         )
       );
       setProgressDates(
-        Array.from(uniqueDates).sort(
-          (a, b) => new Date(a).getTime() - new Date(b).getTime()
-        )
+        Array.from(dates).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
       );
       setData(reportData);
     } catch (err) {
@@ -333,11 +326,14 @@ const AdminDas: React.FC = () => {
         row.report.find(r =>
           new Date(r.class_date).toLocaleDateString('en-IN') === date
         )?.attendance_ratio ?? '-',
-      Cell: ({ cell }) => (
-        <span className="inline-block rounded bg-blue-100 px-2 py-1 text-blue-800">
-          {cell.getValue<string>()}
-        </span>
-      ),
+      Cell: ({ cell }) => {
+        const val = cell.getValue() as string;
+        return (
+          <span className="inline-block rounded bg-blue-100 px-2 py-1 text-blue-800">
+            {val}
+          </span>
+        );
+      },
     })),
     {
       id: 'average',
@@ -348,16 +344,19 @@ const AdminDas: React.FC = () => {
           ? Math.round(total / row.report.length).toString()
           : '-';
       },
-      Cell: ({ cell }) => (
-        <span className="inline-block rounded bg-green-100 px-2 py-1 text-green-800">
-          {cell.getValue<string>()}
-        </span>
-      ),
+      Cell: ({ cell }) => {
+        const avg = cell.getValue() as string;
+        return (
+          <span className="inline-block rounded bg-green-100 px-2 py-1 text-green-800">
+            {avg}
+          </span>
+        );
+      },
     },
   ], [progressDates]);
 
-  const handleRowClick = (facilitatorId: string) => {
-    console.log('Facilitator ID:', facilitatorId);
+  const handleRowClick = (id: string) => {
+    console.log('Facilitator ID:', id);
   };
 
   return (
@@ -378,6 +377,7 @@ const AdminDas: React.FC = () => {
             <option key={g} value={g}>{g}</option>
           ))}
         </select>
+
         <select
           value={month}
           onChange={e => setMonth(+e.target.value)}
@@ -387,6 +387,7 @@ const AdminDas: React.FC = () => {
             <option key={m} value={i + 1}>{m}</option>
           ))}
         </select>
+
         <select
           value={year}
           onChange={e => setYear(+e.target.value)}
@@ -397,6 +398,7 @@ const AdminDas: React.FC = () => {
           ))}
         </select>
       </form>
+
       <div className="rounded bg-white p-5 shadow">
         <MaterialReactTable
           columns={columns}
