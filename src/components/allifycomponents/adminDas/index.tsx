@@ -231,8 +231,9 @@
 
 
 
+// src/components/allifycomponents/adminDas/index.tsx
 'use client';
-
+import React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { FaPhoneAlt } from 'react-icons/fa';
@@ -253,14 +254,19 @@ type FacilitatorReport = {
 };
 
 const groupList = [
-  'Nachiketa', 'Bhima', 'Arjun',
-  'Shadev', 'Nakul', 'Jagganath', 'DYS',
+  'Nachiketa',
+  'Bhima',
+  'Arjun',
+  'Shadev',
+  'Nakul',
+  'Jagganath',
+  'DYS',
 ];
 
 const monthList = [
-  'January','February','March','April',
-  'May','June','July','August',
-  'September','October','November','December',
+  'January', 'February', 'March', 'April',
+  'May', 'June', 'July', 'August',
+  'September', 'October', 'November', 'December',
 ];
 
 const currentYear = new Date().getFullYear();
@@ -268,7 +274,7 @@ const yearList = [currentYear - 1, currentYear, currentYear + 1];
 
 const getCurrentMonth = () => new Date().getMonth() + 1;
 
-const AdminDas = () => {
+const AdminDas: React.FC = () => {
   const [data, setData] = useState<FacilitatorReport[]>([]);
   const [progressDates, setProgressDates] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -294,7 +300,7 @@ const AdminDas = () => {
       );
       setData(reportData);
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching facilitator report:', error);
     } finally {
       setIsLoading(false);
     }
@@ -358,11 +364,12 @@ const AdminDas = () => {
 
   const handleRowClick = (facilitatorId: string) => {
     console.log('Facilitator ID:', facilitatorId);
-    // e.g. navigate or open a modal
+    // e.g. navigate to details page or open a modal
   };
 
   return (
     <div className="mt-10">
+      {/* Filters */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -403,11 +410,11 @@ const AdminDas = () => {
         <MaterialReactTable
           columns={columns}
           data={data}
-          state={{ isLoading }}                             {/* loading state :contentReference[oaicite:2]{index=2} */}
+          state={{ isLoading }}
           muiTableBodyRowProps={({ row }) => ({
             onClick: () => handleRowClick(row.original.facilitatorId),
             sx: { cursor: 'pointer' },
-          })}                                                {/* row click :contentReference[oaicite:3]{index=3} */}
+          })}
           muiTablePaperProps={{ sx: { overflow: 'visible !important' } }}
           muiTableBodyCellProps={{ sx: { overflow: 'visible' } }}
         />
