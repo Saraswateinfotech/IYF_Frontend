@@ -232,9 +232,9 @@
 
 
 // src/components/allifycomponents/adminDas/index.tsx
+// src/components/allifycomponents/adminDas/index.tsx
 'use client';
-import React from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { FaPhoneAlt } from 'react-icons/fa';
 import { getStudentReport } from 'services/apiCollection';
@@ -288,8 +288,8 @@ const AdminDas: React.FC = () => {
       const res = await getStudentReport(group, month, year);
       const reportData: FacilitatorReport[] = res.data;
       const uniqueDates = new Set<string>();
-      reportData.forEach((f) =>
-        f.report.forEach((e) =>
+      reportData.forEach(f =>
+        f.report.forEach(e =>
           uniqueDates.add(new Date(e.class_date).toLocaleDateString('en-IN'))
         )
       );
@@ -299,8 +299,8 @@ const AdminDas: React.FC = () => {
         )
       );
       setData(reportData);
-    } catch (error) {
-      console.error('Error fetching facilitator report:', error);
+    } catch (err) {
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
@@ -310,12 +310,8 @@ const AdminDas: React.FC = () => {
     fetchReport(groupName, month, year);
   }, [groupName, month, year]);
 
-  const columns = useMemo<MRT_ColumnDef<FacilitatorReport>[]>(() => [
-    {
-      accessorKey: 'facilitator_name',
-      header: 'Name',
-      size: 200,
-    },
+  const columns = useMemo((): MRT_ColumnDef<FacilitatorReport>[] => [
+    { accessorKey: 'facilitator_name', header: 'Name', size: 200 },
     {
       accessorKey: 'phone_number',
       header: 'Phone Number',
@@ -330,15 +326,13 @@ const AdminDas: React.FC = () => {
         </a>
       ),
     },
-    ...progressDates.map((date) => ({
+    ...progressDates.map(date => ({
       header: date,
       id: date,
-      accessorFn: (row) =>
-        row.report
-          .find((r) =>
-            new Date(r.class_date).toLocaleDateString('en-IN') === date
-          )
-          ?.attendance_ratio ?? '-',
+      accessorFn: row =>
+        row.report.find(r =>
+          new Date(r.class_date).toLocaleDateString('en-IN') === date
+        )?.attendance_ratio ?? '-',
       Cell: ({ cell }) => (
         <span className="inline-block rounded bg-blue-100 px-2 py-1 text-blue-800">
           {cell.getValue<string>()}
@@ -348,7 +342,7 @@ const AdminDas: React.FC = () => {
     {
       id: 'average',
       header: 'Monthly Avg',
-      accessorFn: (row) => {
+      accessorFn: row => {
         const total = row.report.reduce((sum, r) => sum + r.attendance_count, 0);
         return row.report.length
           ? Math.round(total / row.report.length).toString()
@@ -364,14 +358,12 @@ const AdminDas: React.FC = () => {
 
   const handleRowClick = (facilitatorId: string) => {
     console.log('Facilitator ID:', facilitatorId);
-    // e.g. navigate to details page or open a modal
   };
 
   return (
     <div className="mt-10">
-      {/* Filters */}
       <form
-        onSubmit={(e) => {
+        onSubmit={e => {
           e.preventDefault();
           fetchReport(groupName, month, year);
         }}
@@ -379,16 +371,16 @@ const AdminDas: React.FC = () => {
       >
         <select
           value={groupName}
-          onChange={(e) => setGroupName(e.target.value)}
+          onChange={e => setGroupName(e.target.value)}
           className="rounded border p-2"
         >
-          {groupList.map((g) => (
+          {groupList.map(g => (
             <option key={g} value={g}>{g}</option>
           ))}
         </select>
         <select
           value={month}
-          onChange={(e) => setMonth(+e.target.value)}
+          onChange={e => setMonth(+e.target.value)}
           className="rounded border p-2"
         >
           {monthList.map((m, i) => (
@@ -397,15 +389,14 @@ const AdminDas: React.FC = () => {
         </select>
         <select
           value={year}
-          onChange={(e) => setYear(+e.target.value)}
+          onChange={e => setYear(+e.target.value)}
           className="rounded border p-2"
         >
-          {yearList.map((y) => (
+          {yearList.map(y => (
             <option key={y} value={y}>{y}</option>
           ))}
         </select>
       </form>
-
       <div className="rounded bg-white p-5 shadow">
         <MaterialReactTable
           columns={columns}
