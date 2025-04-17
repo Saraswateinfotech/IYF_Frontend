@@ -1,4 +1,4 @@
-import AttendanceReport from 'components/allifycomponents/facilitatorDas/AttendanceReport'
+import AttendanceReport from 'components/allifycomponents/facilitatorDas/FacilitatorUserReport'
 import React from 'react'
 
 const page = () => {
