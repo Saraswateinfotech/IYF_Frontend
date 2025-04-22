@@ -135,7 +135,7 @@ export const frontlinerStudentByIdOfcallingId = async (frontliner_id) => {
 
 export const getdashboardReport = async () => {
   try {
-    const response = await api.get(`/dashboar/dashboard-report`);
+    const response = await api.get(`/dashboard/dashboard-report`);
     return response.data;
   } catch (error) {
     console.error(
@@ -161,7 +161,7 @@ export const updateStudentStatus = async (useId, studentStatus) => {
 
 export const getFrontlinerReport = async (calling_id) => {
   try {
-    const response = await api.get(`/dashboar/frontliner-report/${calling_id}`);
+    const response = await api.get(`/dashboard/frontliner-report/${calling_id}`);
     return response.data;
   } catch (error) {
     console.error(
@@ -261,23 +261,62 @@ export const getUsersByUserId = async (user_id) => {
   }
 };
 
-export const updateStudentGroupWiseName = async (user_id, newGroupName) => {
-  try {
-    const response = await api.post('/attendance/updateStudentGroupWise', {
-      user_id,
-      newGroupName,
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error updateStudentGroupWise :', error);
-    throw error;
-  }
-};
-export const getFrontlinerdetailReport = async (facilitatorId, group_name) => {
+// export const updateStudentGroupWiseName = async (user_id, newGroupName) => {
+//   try {
+//     const response = await api.post('/attendance/updateStudentGroupWise', {
+//       user_id,
+//       newGroupName,
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error updateStudentGroupWise :', error);
+//     throw error;
+//   }
+// };
+
+
+ export const updatestudentgroupwisename = async (devoteeId, priviousGroup, currentGroup) => {
+  debugger
+   try {
+     const response = await api.post('/groupMigration/migrate', {
+      devoteeId,
+      priviousGroup,
+      currentGroup
+     });
+     return response.data;
+   } catch (error) {
+     console.error('error updatestudentgroupwise :', error);
+     throw error;
+   }
+ };
+
+// export const getFrontlinerdetailReport = async (facilitatorId, group_name) => {
+//   try {
+//     const response = await api.post('/attendance/getFrontlinerdetailReport', {
+//       facilitatorId,
+//       group_name,
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error getFrontlinerdetailReport :', error);
+//     throw error;
+//   }
+// };
+
+
+export const getFrontlinerdetailReport = async (
+  facilitatorId,
+  groupName,
+  selectedMonth,
+  selectedYear
+) => {
   try {
     const response = await api.post('/attendance/getFrontlinerdetailReport', {
       facilitatorId,
-      group_name,
+      groupPrefix: groupName,      
+      sessionName: groupName,  
+      selectedMonth,
+      selectedYear,
     });
     return response.data;
   } catch (error) {
@@ -285,7 +324,6 @@ export const getFrontlinerdetailReport = async (facilitatorId, group_name) => {
     throw error;
   }
 };
-
 
 export const getGroupUserCount = async (facilitatorId) => {
   try {

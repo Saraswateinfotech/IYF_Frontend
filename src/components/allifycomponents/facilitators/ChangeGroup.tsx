@@ -119,7 +119,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import { updateStudentGroupWiseName } from 'services/apiCollection';
+import { updatestudentgroupwisename } from 'services/apiCollection';
 
 type Student = {
   user_id: number;
@@ -130,19 +130,22 @@ const ChangeGroup = ({
   closeModal,
   selectedRow,
   onSuccess,
+  priviousGroupName, // Receive currentGroupName prop
 }: {
   isOpens: boolean;
   closeModal: () => void;
   selectedRow: Student | null;
   onSuccess: () => void;
+  priviousGroupName: string; // currentGroupName is passed as a prop
 }) => {
-  const [newGroupName, setNewGroupName] = useState('');
+  const [currentGroup, setNewGroupName] = useState(priviousGroupName);
 
   const handleSubmit = async () => {
-    if (!newGroupName || !selectedRow) return;
-
+    debugger
+    if (!currentGroup || !selectedRow) return;
+     console.log(selectedRow);
     try {
-      await updateStudentGroupWiseName(selectedRow.user_id, newGroupName);
+      await updatestudentgroupwisename(selectedRow.user_id, priviousGroupName, currentGroup);
       toast.success('Updated student group name successfully');
 
       setTimeout(() => {
@@ -177,7 +180,7 @@ const ChangeGroup = ({
               Select a Group
             </label>
             <select
-              value={newGroupName}
+              value={currentGroup}
               onChange={(e) => setNewGroupName(e.target.value)}
               className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
             >
@@ -196,7 +199,7 @@ const ChangeGroup = ({
 
         <DialogActions>
           <Button onClick={closeModal}>Cancel</Button>
-          <Button onClick={handleSubmit} disabled={!newGroupName}>
+          <Button onClick={handleSubmit} disabled={!currentGroup}>
             Submit
           </Button>
         </DialogActions>

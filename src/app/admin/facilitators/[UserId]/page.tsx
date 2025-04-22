@@ -1,5 +1,4 @@
 'use client';
-
 import { useEffect, useMemo, useState } from 'react';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { getFrontlinerdetailReport } from 'services/apiCollection';
@@ -30,7 +29,8 @@ const FacilitatorDetails = () => {
     try {
       setIsLoading(true);
       const users = await getFrontlinerdetailReport(facilitatorId, group_name);
-      setData(users.users);
+      console.log(users)
+      setData(users);
     } catch (err) {
       console.log('Failed to fetch students by group');
     } finally {
@@ -58,10 +58,10 @@ const FacilitatorDetails = () => {
         header: 'Name',
         size: 200,
       },
-     
+
       {
-        accessorKey: 'profession',
-        header: 'Profession',
+        accessorKey: 'chanting_round',
+        header: 'Chanting Round',
         size: 150,
         Cell: ({ cell }) => formatProfession(cell.getValue() as string),
       },
@@ -98,7 +98,6 @@ const FacilitatorDetails = () => {
           </button>
         ),
       },
-     
     ],
     [],
   );
@@ -147,7 +146,7 @@ const FacilitatorDetails = () => {
         <div className="mb-5 mt-0 rounded-md bg-white p-5 shadow-2xl">
           <MaterialReactTable
             columns={columns}
-            data={data}
+            data={Array.isArray(data) ? data : []} // Ensure that data is always an array
             enableSorting
             onRowSelectionChange={setRowSelection}
             state={{ rowSelection }}
@@ -178,6 +177,7 @@ const FacilitatorDetails = () => {
         closeModal={() => setOpen(false)}
         selectedRow={selectedRow}
         onSuccess={() => fetchGetStudentGroupWise(groupName)}
+        priviousGroupName={groupName} // Pass groupName as a prop
       />
     </>
   );
