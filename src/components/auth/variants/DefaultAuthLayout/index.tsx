@@ -39,7 +39,7 @@ function Default(props: { maincard: JSX.Element }) {
               {/* Set background image */}
               <div
                 style={{
-                  backgroundImage: `url(${authImg})`,  // Using uploaded image as background
+                  backgroundImage: `url(${authImg.src})`,  // Using uploaded image as background
                   backgroundSize: 'cover',  // Ensures the image covers the entire container
                   backgroundPosition: 'center',  // Centers the image
                   height: '95%',  // Full container height

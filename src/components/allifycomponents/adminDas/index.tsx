@@ -769,7 +769,7 @@ const AdminDas: React.FC = () => {
     );
   };
 
-  /* ─────────────── UI ─────────────── */
+  /* ───────────── UI ─────────────── */
   return (
     <div className="mt-10">
       {/* filters */}
