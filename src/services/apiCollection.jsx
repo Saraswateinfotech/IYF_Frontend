@@ -135,7 +135,7 @@ export const frontlinerStudentByIdOfcallingId = async (frontliner_id) => {
 
 export const getdashboardReport = async () => {
   try {
-    const response = await api.get(`/dashboar/dashboard-report`);
+    const response = await api.get(`/dashboard/dashboard-report`);
     return response.data;
   } catch (error) {
     console.error(
@@ -161,7 +161,7 @@ export const updateStudentStatus = async (useId, studentStatus) => {
 
 export const getFrontlinerReport = async (calling_id) => {
   try {
-    const response = await api.get(`/dashboar/frontliner-report/${calling_id}`);
+    const response = await api.get(`/dashboard/frontliner-report/${calling_id}`);
     return response.data;
   } catch (error) {
     console.error(
