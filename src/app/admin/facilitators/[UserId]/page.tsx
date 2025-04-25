@@ -17,7 +17,8 @@ type Student = {
 const FacilitatorDetails = () => {
   const params = useParams();
   const facilitatorId = params.UserId;
-
+  const selectedMonth = null;
+  const selectedYear = null;
   const [data, setData] = useState<Student[]>([]);
   const [selectedRow, setSelectedRow] = useState<Student | null>(null);
   const [open, setOpen] = useState(false);
@@ -28,7 +29,7 @@ const FacilitatorDetails = () => {
   const fetchGetStudentGroupWise = async (group_name: string) => {
     try {
       setIsLoading(true);
-      const users = await getFrontlinerdetailReport(facilitatorId, group_name);
+      const users = await getFrontlinerdetailReport(facilitatorId, group_name, selectedMonth, selectedYear);
       console.log(users)
       setData(users);
     } catch (err) {
@@ -54,7 +55,7 @@ const FacilitatorDetails = () => {
   const columns = useMemo<MRT_ColumnDef<Student>[]>(
     () => [
       {
-        accessorKey: 'name',
+        accessorKey: 'student_name',
         header: 'Name',
         size: 200,
       },
@@ -145,12 +146,16 @@ const FacilitatorDetails = () => {
 
         <div className="mb-5 mt-0 rounded-md bg-white p-5 shadow-2xl">
           <MaterialReactTable
+
             columns={columns}
             data={Array.isArray(data) ? data : []} // Ensure that data is always an array
             enableSorting
             onRowSelectionChange={setRowSelection}
             state={{ rowSelection }}
-            getRowId={(row) => row.user_id.toString()}
+            getRowId={(row, index) =>
+              (row.user_id ?? row.userId ?? index).toString()
+            }
+            
             muiTableHeadCellProps={{
               sx: {
                 backgroundColor: '#312e81',

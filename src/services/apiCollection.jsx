@@ -310,17 +310,26 @@ export const getFrontlinerdetailReport = async (
   selectedMonth,
   selectedYear
 ) => {
+  // normalize month/year: if undefined/null/"" ⇒ null
+  const monthParam = selectedMonth != null && selectedMonth !== "" 
+    ? selectedMonth 
+    : null;
+  const yearParam = selectedYear != null && selectedYear !== "" 
+    ? selectedYear 
+    : null;
+
   try {
+    debugger
     const response = await api.post('/attendance/getFrontlinerdetailReport', {
       facilitatorId,
-      groupPrefix: groupName,      
-      sessionName: groupName,  
-      selectedMonth,
-      selectedYear,
+      groupPrefix: groupName,
+      sessionName: groupName,
+      selectedMonth: monthParam,
+      selectedYear: yearParam,
     });
     return response.data;
   } catch (error) {
-    console.error('Error getFrontlinerdetailReport :', error);
+    console.error('Error getFrontlinerdetailReport:', error);
     throw error;
   }
 };
