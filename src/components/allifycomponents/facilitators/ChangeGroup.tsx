@@ -123,6 +123,7 @@ import { updatestudentgroupwisename } from 'services/apiCollection';
 
 type Student = {
   user_id: number;
+  student_id: number;
 };
 
 const ChangeGroup = ({
@@ -143,9 +144,8 @@ const ChangeGroup = ({
   const handleSubmit = async () => {
     debugger
     if (!currentGroup || !selectedRow) return;
-     console.log(selectedRow);
     try {
-      await updatestudentgroupwisename(selectedRow.user_id, priviousGroupName, currentGroup);
+      await updatestudentgroupwisename(selectedRow.student_id, priviousGroupName, currentGroup);
       toast.success('Updated student group name successfully');
 
       setTimeout(() => {
