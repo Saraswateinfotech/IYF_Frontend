@@ -152,9 +152,9 @@ const FacilitatorDetails = () => {
             enableSorting
             onRowSelectionChange={setRowSelection}
             state={{ rowSelection }}
-            getRowId={(row, index) =>
-              (row.user_id ?? row.userId ?? index).toString()
-            }
+            getRowId={(row) => {
+              return row.user_id.toString();
+            }}
             
             muiTableHeadCellProps={{
               sx: {
