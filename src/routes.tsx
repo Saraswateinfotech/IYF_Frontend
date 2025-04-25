@@ -99,7 +99,14 @@ const routes = [
     layout: '/admin',
     path: '/facilitators',
     icon: <IoIosMan />,
-    roles: ['admin','coordinator'],
+    roles: ['coordinator'],
+  },
+  {
+    name: 'Facilitators',
+    layout: '/admin',
+    path: '/allFacilitatorsReportForAdmin',
+    icon: <IoIosMan />,
+    roles: ['admin'],
   },
   {
     name: 'Das-Accounts',
