@@ -145,7 +145,7 @@ const ChangeGroup = ({
     if (!currentGroup || !selectedRow) return;
      console.log(selectedRow);
     try {
-      await updatestudentgroupwisename(selectedRow.student_id, priviousGroupName, currentGroup);
+      await updatestudentgroupwisename(selectedRow.user_id, priviousGroupName, currentGroup);
       toast.success('Updated student group name successfully');
 
       setTimeout(() => {
