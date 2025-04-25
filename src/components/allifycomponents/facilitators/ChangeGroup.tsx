@@ -123,7 +123,7 @@ import { updatestudentgroupwisename } from 'services/apiCollection';
 
 type Student = {
   user_id: number;
-  student_id: number;
+  student_id?: number;
 };
 
 const ChangeGroup = ({
