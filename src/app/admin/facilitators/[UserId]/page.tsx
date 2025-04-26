@@ -12,6 +12,7 @@ type Student = {
   name: string;
   mobile_number: string;
   profession: string;
+  student_id: number;
 };
 
 const FacilitatorDetails = () => {
