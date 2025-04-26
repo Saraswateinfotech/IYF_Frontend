@@ -142,7 +142,6 @@ const ChangeGroup = ({
   const [currentGroup, setNewGroupName] = useState(priviousGroupName);
 
   const handleSubmit = async () => {
-    debugger
     if (!currentGroup || !selectedRow) return;
     try {
       await updatestudentgroupwisename(selectedRow.student_id, priviousGroupName, currentGroup);

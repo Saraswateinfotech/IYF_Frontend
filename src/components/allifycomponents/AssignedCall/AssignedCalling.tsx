@@ -28,6 +28,7 @@ const AssignedCalling = () => {
       setIsLoading(true);
       const users = await getUserByCallingId();
       setData(users.data);
+      console.log(users)
     } catch (err) {
       console.log('Failed to fetch students by calling ID');
     } finally {

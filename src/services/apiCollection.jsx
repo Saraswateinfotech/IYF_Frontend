@@ -276,7 +276,6 @@ export const getUsersByUserId = async (user_id) => {
 
 
  export const updatestudentgroupwisename = async (devoteeId, priviousGroup, currentGroup) => {
-  debugger
    try {
      const response = await api.post('/groupMigration/migrate', {
       devoteeId,
@@ -319,7 +318,6 @@ export const getFrontlinerdetailReport = async (
     : null;
 
   try {
-    debugger
     const response = await api.post('/attendance/getFrontlinerdetailReport', {
       facilitatorId,
       groupPrefix: groupName,

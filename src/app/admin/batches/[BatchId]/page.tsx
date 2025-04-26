@@ -203,7 +203,20 @@ const BatchDetails = () => {
     { accessorKey: 'name', header: 'Name', size: 150 },
     { accessorKey: 'mobile_number', header: 'Mobile Number', size: 200 },
     // { accessorKey: 'group_name', header: 'Group', size: 150 },
-    { accessorKey: 'profession', header: 'Profession', size: 150 },
+    {
+      accessorKey: 'profession',
+      header: 'Profession',
+      Cell: ({ cell }) => {
+        const value = cell.getValue<string>();
+        // Replace underscores with space and capitalize each word
+        const formatted = value
+          .split('_')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+        return formatted;
+      },
+      size: 150,
+    },
     // {
     //   accessorKey: 'edit',
     //   header: 'Edit',

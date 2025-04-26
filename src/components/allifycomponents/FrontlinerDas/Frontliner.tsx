@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
@@ -57,37 +56,47 @@ const FrontlinerCallingSystem = () => {
     {
       accessorKey: 'registration_date',
       header: 'Registration Date',
-      size: 150,
+      size: 180,
+      Cell: ({ cell }) => {
+        const raw = cell.getValue<string>();
+        const date = new Date(raw);
+        const formatted = date.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric',
+        });
+        return <span>{formatted}</span>;
+      },
     },
     {
       accessorKey: 'payment_status',
       header: 'Payment Status',
       size: 150,
-      Cell: ({ row, cell }) => {
+      Cell: ({ cell }) => {
         const value = cell.getValue<string>();
-        const displayValue = value === 'received' ? 'Received' : value === 'not_received' ? 'Not Received' : value;
+        const displayValue =
+          value === 'received'
+            ? 'Received'
+            : value === 'not_received'
+            ? 'Not Received'
+            : value;
         return (
           <span
             style={{
               color: value === 'received' ? 'green' : 'red',
               fontWeight: 'bold',
-              cursor: value === 'not_received' ? 'pointer' : 'default',
               display: 'flex',
               alignItems: 'center',
             }}
           >
-            {value === 'received' ? (
-              <FaCheckCircle style={{ marginRight: '8px' }} />
-            ) : (
-              <FaTimesCircle style={{ marginRight: '8px' }} />
-            )}
+            {value === 'received' ? <FaCheckCircle style={{ marginRight: 8 }} /> : <FaTimesCircle style={{ marginRight: 8 }} />}
             {displayValue}
           </span>
         );
       },
-    }
-    
+    },
   ], []);
+  
 
   if (isLoading) {
     return <div className="mt-6 px-6 text-lg dark:bg-white">Loading...</div>;

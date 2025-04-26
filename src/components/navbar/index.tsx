@@ -6,7 +6,7 @@ import NavLink from 'components/link/NavLink';
 
 import { RiMoonFill, RiSunFill } from 'react-icons/ri';
 
-import avatar from '/public/img/avatars/avatar4.png';
+import avatar from '/public/img/avatars/deldev.png';
 import Image from 'next/image';
 import { IoPersonAddSharp } from 'react-icons/io5';
 import FormModal from 'components/allifycomponents/Attendence/FormModal';

@@ -85,7 +85,7 @@ const routes = [
     layout: '/admin',
     path: '/attendence',
     icon: <MdAddTask />,
-    roles: ['admin','coordinator', 'facilitator'],
+    roles: ['admin','coordinator'],
   },
   {
     name: 'All Batches',
