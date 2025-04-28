@@ -362,3 +362,16 @@ export const getStudentReport = async (groupName,month,year) => {
     throw error;
   }
 };
+
+
+
+
+export const getStudentById = async (id) => {
+  try {
+    const response = await api.get(`/students/getStudent/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching student:", error);
+    throw error;
+  }
+};

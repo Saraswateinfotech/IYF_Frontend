@@ -163,7 +163,22 @@ const FrontlinerCallingPage = () => {
     () => [
       { accessorKey: 'name', header: 'Name', size: 180 },
       { accessorKey: 'payment_mode', header: 'Payment Mode', size: 80 },
-      { accessorKey: 'registration_date', header: 'Registration Date', size: 80 },
+      // { accessorKey: 'registration_date', header: 'Registration Date', size: 80 },
+      {
+        accessorKey: 'registration_date',
+        header: 'Registration Date',
+        size: 180,
+        Cell: ({ cell }) => {
+          const raw = cell.getValue<string>();
+          const date = new Date(raw);
+          const formatted = date.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+          });
+          return <span>{formatted}</span>;
+        },
+      },
       {
         accessorKey: 'payment_status',
         header: 'Payment Status',
@@ -225,8 +240,19 @@ const FrontlinerCallingPage = () => {
   const callingStudentColumns = useMemo<MRT_ColumnDef<Student>[]>(
     () => [
       { accessorKey: 'name', header: 'Name' },
-      { accessorKey: 'profession', header: 'Profession' },
       {
+        accessorKey: 'profession',
+        header: 'Profession',
+        Cell: ({ cell }) => {
+          const value = cell.getValue<string>();
+          // Replace underscores with space and capitalize each word
+          const formatted = value
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+          return formatted;
+        },
+      },      {
         accessorKey: 'student_status',
         header: 'Student Status',
         Cell: ({ cell }) => {
@@ -240,7 +266,21 @@ const FrontlinerCallingPage = () => {
           return <span>{statusMap[value] || value}</span>;
         },
       },
-      { accessorKey: 'student_status_date', header: 'Last Calling Date' },
+      // { accessorKey: 'student_status_date', header: 'Last Calling Date' },
+      {
+        accessorKey: 'student_status_date',
+        header: 'Last Calling Date',
+        Cell: ({ cell }) => {
+          const raw = cell.getValue<string>();
+          const date = new Date(raw);
+          const formatted = date.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+          });
+          return <span>{formatted}</span>;
+        },
+      },
       {
         accessorKey: 'response',
         header: 'Calling Response',

@@ -85,6 +85,25 @@ export default function FacilitatorUserReport({
       { accessorKey: 'mobile_number', header: 'Phone Number' },
       { accessorKey: 'chanting_round', header: 'Chanting Round' },
       { accessorKey: 'GroupRatio', header: 'Total Report' },
+      // {
+      //   accessorKey: 'action',
+      //   header: 'Edit',
+      //   Cell: ({ row }) => (
+      //     <button
+      //       className="flex items-center gap-2 rounded bg-blue-900 px-3 py-1 text-white hover:bg-blue-800"
+      //       onClick={() =>
+      //         router.push(
+      //           `/admin/batches/BatchId/edit/${
+      //             row.original.student_id ?? row.original.user_id
+      //           }?data=${encodeURIComponent(JSON.stringify(row.original))}`,
+      //         )
+      //       }
+      //     >
+      //       <FiEdit size={16} />
+      //       Edit
+      //     </button>
+      //   ),
+      // },
       {
         accessorKey: 'action',
         header: 'Edit',
@@ -93,9 +112,9 @@ export default function FacilitatorUserReport({
             className="flex items-center gap-2 rounded bg-blue-900 px-3 py-1 text-white hover:bg-blue-800"
             onClick={() =>
               router.push(
-                `/admin/batches/BatchId/edit/${
+                `/admin/editstudent/${
                   row.original.student_id ?? row.original.user_id
-                }?data=${encodeURIComponent(JSON.stringify(row.original))}`,
+                }`
               )
             }
           >
@@ -103,7 +122,8 @@ export default function FacilitatorUserReport({
             Edit
           </button>
         ),
-      },
+      }
+      
     ],
     [router],
   );

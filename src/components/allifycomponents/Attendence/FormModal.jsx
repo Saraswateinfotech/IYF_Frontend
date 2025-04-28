@@ -23,7 +23,7 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
     name: '',
     dob: '',
     mobile: '',
-    frontlinerid: '',
+    frontlinerid: frontlinerId,
     profession: '',
     address: '',
     classMode: '',
@@ -38,7 +38,7 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
       name: '',
       dob: '',
       mobile: '',
-      frontlinerid: '',
+      frontlinerid: frontlinerId,
       profession: '',
       address: '',
       classMode: '',
@@ -53,7 +53,7 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
     let newErrors = {};
 
     if (!formData.name) newErrors.name = 'Name is required!';
-    if (!formData.dob) newErrors.dob = 'Date of Birth is required!';
+    // if (!formData.dob) newErrors.dob = 'Date of Birth is required!';
     if (!formData.mobile) newErrors.mobile = 'Mobile Number is required!';
     if (!formData.profession)
       newErrors.profession = 'Please select a profession!';
@@ -61,8 +61,8 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
       newErrors.classMode = 'Please select a class mode!';
     if (!formData.paymentMethod)
       newErrors.paymentMethod = 'Please select a payment method!';
-    if (!formData.frontlinerid)
-      newErrors.frontlinerid = 'Please select a frontliner!';
+    // if (!formData.frontlinerid)
+    //   newErrors.frontlinerid = 'Please select a frontliner!';
     if (
       (formData.classMode === 'Online' ||
         formData.paymentMethod === 'Referral') &&
@@ -210,7 +210,7 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
             )}
 
             {/* DOB */}
-            <label className="font-semibold">Date of Birth *</label>
+            <label className="font-semibold">Date of Birth (Optional)</label>
             <input
               type="date"
               name="dob"
@@ -218,7 +218,7 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
               value={formData.dob}
               onChange={handleChange}
             />
-            {errors.dob && <p className="text-sm text-red-500">{errors.dob}</p>}
+            {/* {errors.dob && <p className="text-sm text-red-500">{errors.dob}</p>} */}
 
             {/* Mobile */}
             <label className="font-semibold">Mobile Number *</label>
@@ -244,7 +244,7 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
             />
 
             {/* Frontliner */}
-            <label className="font-semibold">Frontliner Name *</label>
+            {/* <label className="font-semibold">Frontliner Name *</label>
             <select
               name="frontlinerid"
               className="rounded-md border px-4 py-2"
@@ -255,10 +255,19 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
                 <option value={frontlinerId}>
                   {frontlinerName}
                 </option>
-            </select>
-            {errors.frontlinerid && (
+            </select> */}
+            <label className="font-semibold">Frontliner Name *</label>
+<input
+  type="text"
+  name="frontlinerid"
+  className="rounded-md border px-4 py-2"
+  value={frontlinerName}
+  readOnly 
+/>
+
+            {/* {errors.frontlinerid && (
               <p className="text-sm text-red-500">{errors.frontlinerid}</p>
-            )}
+            )} */}
 
             {/* Profession */}
             <label className="font-semibold">Profession *</label>
@@ -303,7 +312,7 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
               <option value="">Select Payment Method</option>
               <option value="Unpaid">Unpaid</option>
               <option value="Online">Online</option>
-              <option value="Referral">Referral</option>
+              {/* <option value="Referral">Referral</option> */}
               <option value="Cash">Cash</option>
             </select>
             {errors.paymentMethod && (
