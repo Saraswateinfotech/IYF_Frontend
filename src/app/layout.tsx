@@ -19,6 +19,7 @@
 import React, { ReactNode } from 'react';
 import AppWrappers from './AppWrappers';
 import { DashboardProvider } from 'contexts/DashboardContext';
+import { ToastContainer } from 'react-toastify';
 // import '@asseinfo/react-kanban/dist/styles.css';
 // import '/public/styles/Plugins.css';
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body id={'root'}>
         {/* <AppWrappers>{children}</AppWrappers> */}
         <DashboardProvider> 
+          <ToastContainer/>
           <AppWrappers>{children}</AppWrappers>
         </DashboardProvider>
       </body>
