@@ -277,7 +277,9 @@ const CallingSystem = () => {
         </h2>
 
         <Reports report={report} />
-
+        <h2 className="mb-5 text-lg font-bold dark:text-white">
+        Frontliners
+        </h2>
         <div className="mb-5 mt-0 rounded-md bg-white p-5 shadow-2xl">
           <MaterialReactTable
             columns={frontlinerColumns}

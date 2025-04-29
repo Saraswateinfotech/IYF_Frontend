@@ -454,7 +454,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import {
   fetchAllFacilitatorOrFrontliner,
   updateCallingId,
@@ -764,6 +764,8 @@ const FrontlinerCallingPage = () => {
   );
 
   return (
+    <>
+    <ToastContainer/>
     <div className="mt-8">
       <div className="mb-6 flex justify-end">
         <button
@@ -885,6 +887,7 @@ const FrontlinerCallingPage = () => {
         onSuccess={refreshStudentAndReports}
       />
     </div>
+    </>
   );
 };
 
