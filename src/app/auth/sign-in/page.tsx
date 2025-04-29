@@ -136,10 +136,10 @@ function SignInDefault() {
         throw new Error('Invalid login response');
       }
     } catch (err) {
-      const errorMsg =
-        err.response?.data?.error ||
-        (err.response?.status === 400 ? 'Invalid User ID or Password' : 'Something went wrong!');
-      toast.error(errorMsg);
+      // const errorMsg =
+      //   err.response?.data?.error ||
+      //   (err.response?.status === 400 ? 'Invalid User ID or Password' : 'Something went wrong!');
+      toast.error(err.error);
     } finally {
       setLoading(false);
     }
