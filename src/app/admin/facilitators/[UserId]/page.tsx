@@ -5,7 +5,7 @@ import { getFrontlinerdetailReport } from 'services/apiCollection';
 import { FaPhoneAlt } from 'react-icons/fa';
 import ChangeGroup from 'components/allifycomponents/facilitators/ChangeGroup';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 
 type Student = {
   user_id: number;
@@ -17,7 +17,10 @@ type Student = {
 
 const FacilitatorDetails = () => {
   const params = useParams();
+    const searchParams = useSearchParams();
   const facilitatorId = params.UserId;
+  const facilitatorName = searchParams.get('facilitatorName');
+
   const selectedMonth = null;
   const selectedYear = null;
   const [data, setData] = useState<Student[]>([]);
@@ -110,6 +113,9 @@ const FacilitatorDetails = () => {
 
   return (
     <>
+      <h2 className="mt-5 mb-5 text-lg font-bold dark:text-white">
+      Facilitator {facilitatorName} Student Report</h2>
+
       <div className="mt-10">
         <div className="mb-4 flex justify-end">
           <form

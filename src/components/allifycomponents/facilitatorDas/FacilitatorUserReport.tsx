@@ -6,6 +6,8 @@ import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { FiEdit } from 'react-icons/fi';
 import { getFrontlinerdetailReport } from 'services/apiCollection';
 import DetailPanel from './DetailPanel';
+import { FaWhatsapp } from 'react-icons/fa6';
+import { FaPhoneAlt } from 'react-icons/fa';
 
 type Student = {
   student_id?: number;
@@ -82,7 +84,34 @@ export default function FacilitatorUserReport({
   const columns = useMemo<MRT_ColumnDef<Student>[]>(
     () => [
       { accessorKey: 'student_name', header: 'Name' },
-      { accessorKey: 'mobile_number', header: 'Phone Number' },
+      // { accessorKey: 'mobile_number', header: 'Phone Number' },
+      {
+        accessorKey: 'mobile_number',
+        header: 'Phone Number',
+        Cell: ({ row }) => (
+          <div className="flex space-x-4">
+             <a
+              href={`https://wa.me/${row.original.mobile_number}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-500 transition duration-300 ease-in-out transform hover:scale-105"
+            >
+              <FaWhatsapp className="text-lg" />
+              {/* <span className="text-sm md:text-base">WhatsApp</span> */}
+            </a>
+            <a
+              href={`tel:${row.original.mobile_number}`}
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-800 transition duration-300 ease-in-out transform hover:scale-105"
+            >
+              <FaPhoneAlt className="text-lg" />
+              <span className="text-sm md:text-base">{row.original.mobile_number}</span>
+            </a>
+           
+          </div>
+        ),
+      },
       { accessorKey: 'chanting_round', header: 'Chanting Round' },
       { accessorKey: 'GroupRatio', header: 'Total Report' },
       // {
@@ -130,7 +159,8 @@ export default function FacilitatorUserReport({
 
   return (
     <div className="mt-6">
-      <h2 className="text-black mb-6 text-xl font-bold">Student Report</h2>
+        <h2 className="mb-5 text-lg font-bold dark:text-white">
+        Student Report</h2>
 
       <form
         onSubmit={(e) => {

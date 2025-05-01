@@ -54,7 +54,13 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
 
     if (!formData.name) newErrors.name = 'Name is required!';
     // if (!formData.dob) newErrors.dob = 'Date of Birth is required!';
-    if (!formData.mobile) newErrors.mobile = 'Mobile Number is required!';
+    // if (!formData.mobile) newErrors.mobile = 'Mobile Number is required!';
+    if (!formData.mobile) {
+      newErrors.mobile = 'Mobile Number is required!';
+    } else if (!/^\d{10}$/.test(formData.mobile)) {
+      newErrors.mobile = 'Mobile Number must be 10 digits!';
+    }
+    
     if (!formData.profession)
       newErrors.profession = 'Please select a profession!';
     if (!formData.classMode)

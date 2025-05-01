@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { FaPhoneAlt } from 'react-icons/fa';
 import { getStudentReport } from 'services/apiCollection';
+import { FaWhatsapp } from 'react-icons/fa6';
 
 /* ────────────────────────── types ────────────────────────── */
 type AttendanceEntry = {
@@ -101,22 +102,49 @@ const FacilitatorsForAdmin: React.FC = () => {
       { accessorKey: 'facilitator_name', header: 'Name', size: 200 },
 
       
+// {
+//   accessorKey: 'phone_number',
+//   header: 'Phone Number',
+//   size: 180,
+//   Cell: ({ row }) => (
+//     <a
+//       href={`tel:${row.original.phone_number}`}
+//       onClick={e => e.stopPropagation()}
+//       className="flex items-center space-x-2 rounded-lg bg-indigo-900 px-4 py-2 text-white transition hover:bg-indigo-800"
+//     >
+//       <FaPhoneAlt />
+//       <span>{row.original.phone_number}</span>
+//     </a>
+//   ),
+// },
+
 {
   accessorKey: 'phone_number',
   header: 'Phone Number',
-  size: 180,
   Cell: ({ row }) => (
-    <a
-      href={`tel:${row.original.phone_number}`}
-      onClick={e => e.stopPropagation()}
-      className="flex items-center space-x-2 rounded-lg bg-indigo-900 px-4 py-2 text-white transition hover:bg-indigo-800"
-    >
-      <FaPhoneAlt />
-      <span>{row.original.phone_number}</span>
-    </a>
+    <div className="flex space-x-4">
+       <a
+        href={`https://wa.me/${row.original.phone_number}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => e.stopPropagation()}
+        className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-500 transition duration-300 ease-in-out transform hover:scale-105"
+      >
+        <FaWhatsapp className="text-lg" />
+        {/* <span className="text-sm md:text-base">WhatsApp</span> */}
+      </a>
+      <a
+        href={`tel:${row.original.phone_number}`}
+        onClick={(e) => e.stopPropagation()}
+        className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-800 transition duration-300 ease-in-out transform hover:scale-105"
+      >
+        <FaPhoneAlt className="text-lg" />
+        <span className="text-sm md:text-base">{row.original.phone_number}</span>
+      </a>
+     
+    </div>
   ),
 },
-
 
       {
         id: 'average',
@@ -157,12 +185,17 @@ const FacilitatorsForAdmin: React.FC = () => {
   }, [progressDates]);
 
   /* ─────────────── navigation on row click ─────────────── */
-  const handleRowClick = (id: string) => {
+  // const handleRowClick = (id: string) => {
+  //   router.push(
+  //     `/admin/facilitatorUserReport/${id}?groupName=${groupName}&month=${month}&year=${year}&facilitatorName=${facilitator_name}`,
+  //   );
+  // };
+  const handleRowClick = (id: string, name: string) => {
     router.push(
-      `/admin/facilitatorUserReport/${id}?groupName=${groupName}&month=${month}&year=${year}`,
+      `/admin/facilitatorUserReport/${id}?groupName=${groupName}&month=${month}&year=${year}&facilitatorName=${encodeURIComponent(name)}`,
     );
   };
-
+  
   /* ───────────── UI ─────────────── */
   return (
     <>
@@ -219,7 +252,7 @@ const FacilitatorsForAdmin: React.FC = () => {
           data={data}
           state={{ isLoading }}
           muiTableBodyRowProps={({ row }) => ({
-            onClick: () => handleRowClick(row.original.facilitatorId),
+            onClick: () => handleRowClick(row.original.facilitatorId, row.original.facilitator_name),
             sx: { cursor: 'pointer' },
           })}
           muiTablePaperProps={{ sx: { overflow: 'visible !important' } }}

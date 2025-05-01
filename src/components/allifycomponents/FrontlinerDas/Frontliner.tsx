@@ -4,9 +4,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { toast } from 'react-toastify';
 import { frontlinerStudentById, getFrontlinerReport } from 'services/apiCollection';
-import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { FaCheckCircle, FaPhoneAlt, FaTimesCircle } from 'react-icons/fa';
 import { useDashboardContext } from 'contexts/DashboardContext';
 import Reports from '../Reports';
+import { FaWhatsapp } from 'react-icons/fa6';
 
 // Student type
 type Student = {
@@ -51,7 +52,34 @@ const FrontlinerCallingSystem = () => {
 
   const columns = useMemo<MRT_ColumnDef<Student>[]>(() => [
     { accessorKey: 'name', header: 'Name', size: 200 },
-    { accessorKey: 'mobile_number', header: 'Phone Number', size: 150 },
+    // { accessorKey: 'mobile_number', header: 'Phone Number', size: 150 },
+    {
+      accessorKey: 'phone_number',
+      header: 'Phone Number',
+      Cell: ({ row }) => (
+        <div className="flex space-x-4">
+           <a
+            href={`https://wa.me/${row.original.mobile_number}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-500 transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            <FaWhatsapp className="text-lg" />
+            {/* <span className="text-sm md:text-base">WhatsApp</span> */}
+          </a>
+          <a
+            href={`tel:${row.original.mobile_number}`}
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-800 transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            <FaPhoneAlt className="text-lg" />
+            <span className="text-sm md:text-base">{row.original.mobile_number}</span>
+          </a>
+         
+        </div>
+      ),
+    },
     { accessorKey: 'payment_mode', header: 'Payment Mode', size: 150 },
     {
       accessorKey: 'registration_date',

@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { toast, ToastContainer } from 'react-toastify';
 import { fetchAllFacilitatorOrFrontliner } from 'services/apiCollection';
+import { FaWhatsapp } from 'react-icons/fa6';
+import { FaPhoneAlt } from 'react-icons/fa';
 
 type Frontliner = {
   user_id: number;
@@ -38,7 +40,34 @@ const Facilitatorfrontliner = () => {
 
   const frontlinerColumns = useMemo<MRT_ColumnDef<Frontliner>[]>(() => [
     { accessorKey: 'name', header: 'Name' },
-    { accessorKey: 'phone_number', header: 'Phone Number' },
+    // { accessorKey: 'phone_number', header: 'Phone Number' },
+    {
+          accessorKey: 'phone_number',
+          header: 'Phone Number',
+          Cell: ({ row }) => (
+            <div className="flex space-x-4">
+               <a
+                href={`https://wa.me/${row.original.phone_number}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-500 transition duration-300 ease-in-out transform hover:scale-105"
+              >
+                <FaWhatsapp className="text-lg" />
+                {/* <span className="text-sm md:text-base">WhatsApp</span> */}
+              </a>
+              <a
+                href={`tel:${row.original.phone_number}`}
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-800 transition duration-300 ease-in-out transform hover:scale-105"
+              >
+                <FaPhoneAlt className="text-lg" />
+                <span className="text-sm md:text-base">{row.original.phone_number}</span>
+              </a>
+             
+            </div>
+          ),
+        },
     { accessorKey: 'role', header: 'Role' },
   ], []);
 

@@ -1,161 +1,3 @@
-// 'use client';
-
-// import { useParams } from 'next/navigation';
-// import { useEffect, useMemo, useState } from 'react';
-// import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
-// import { getUsersByBatchId } from 'services/apiCollection';
-// import { FiEdit } from 'react-icons/fi';
-// import { useRouter } from 'next/navigation';
-
-// type Student = {
-//   Name: string;
-//   mobile_number: string;
-//   group_name: string;
-//   profession: string;
-// };
-
-// const BatchDetails = () => {
-//   const router = useRouter();
-//   const params = useParams();
-//   const BatchId = params.BatchId;
-
-//   const [students, setStudents] = useState<Student[]>([]);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchStudents = async () => {
-//       try {
-//         const users = await getUsersByBatchId(BatchId);
-//         setStudents(users);
-//       } catch (error) {
-//         console.error("Error fetching students:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchStudents();
-//   }, [BatchId]);
-
-//   const columns = useMemo<MRT_ColumnDef<Student>[]>(() => [
-//     { accessorKey: 'name', header: 'Name', size: 150 },
-//     { accessorKey: 'mobile_number', header: 'Mobile Number', size: 200 },
-//     { accessorKey: 'group_name', header: 'Group', size: 150 },
-//     { accessorKey: 'profession', header: 'profession', size: 150 },
-//  {
-//         accessorKey: 'edit',
-//         header: 'Edit',
-//         Cell: ({ row }) => (
-//           <button
-//             className="px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-800 flex items-center gap-2"
-//             onClick={() => router.push(`/admin/allstudent/batches/${BatchId}/edit/${students.user_id}`)}
-
-//           >
-//             <FiEdit size={16} />
-//             Edit
-//           </button>
-//         ),
-//       },  ], []);
-
-//   return (
-//     <div className="p-2 mt-2">
-//       <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-//         Batch {BatchId} Students
-//       </h2>
-
-//       {loading ? (
-//         <p className="text-gray-700 dark:text-gray-300">Loading...</p>
-//       ) : (
-//         <div className="bg-white mt-7 p-5 mb-5 rounded-md shadow-2xl">
-//           <MaterialReactTable columns={columns} data={students} enableSorting />
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default BatchDetails;
-
-
-
-// 'use client';
-
-// import { useParams } from 'next/navigation';
-// import { useEffect, useMemo, useState } from 'react';
-// import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
-// import { getUsersByBatchId } from 'services/apiCollection';
-// import { FiEdit } from 'react-icons/fi';
-// import { useRouter } from 'next/navigation';
-
-// type Student = {
-//   user_id: string; // Make sure you have user_id
-//   name: string;
-//   mobile_number: string;
-//   group_name: string;
-//   profession: string;
-// };
-
-// const BatchDetails = () => {
-//   const router = useRouter();
-//   const params = useParams();
-//   const BatchId = params.BatchId;
-
-//   const [students, setStudents] = useState<Student[]>([]);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchStudents = async () => {
-//       try {
-//         const users = await getUsersByBatchId(BatchId);
-//         setStudents(users);
-//       } catch (error) {
-//         console.error("Error fetching students:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchStudents();
-//   }, [BatchId]);
-
-//   const columns = useMemo<MRT_ColumnDef<Student>[]>(() => [
-//     { accessorKey: 'name', header: 'Name', size: 150 },
-//     { accessorKey: 'mobile_number', header: 'Mobile Number', size: 200 },
-//     { accessorKey: 'group_name', header: 'Group', size: 150 },
-//     { accessorKey: 'profession', header: 'Profession', size: 150 },
-//     {
-//       accessorKey: 'edit',
-//       header: 'Edit',
-//       Cell: ({ row }) => (
-//         <button
-//           className="px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-800 flex items-center gap-2"
-//           onClick={() => router.push(`/admin/batches/${BatchId}/edit/${row.original.user_id}`)} // Pass user_id in the route
-//         >
-//           <FiEdit size={16} />
-//           Edit
-//         </button>
-//       ),
-//     },
-//   ], []);
-
-//   return (
-//     <div className="p-2 mt-2">
-//       <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-//         Batch {BatchId} Students
-//       </h2>
-
-//       {loading ? (
-//         <p className="text-gray-700 dark:text-gray-300">Loading...</p>
-//       ) : (
-//         <div className="bg-white mt-7 p-5 mb-5 rounded-md shadow-2xl">
-//           <MaterialReactTable columns={columns} data={students} enableSorting />
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default BatchDetails;
 
 
 
@@ -167,6 +9,8 @@ import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { getUsersByBatchId } from 'services/apiCollection';
 import { FiEdit } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
+import { FaWhatsapp } from 'react-icons/fa6';
+import { FaPhoneAlt } from 'react-icons/fa';
 
 type Student = {
   user_id: string;
@@ -201,7 +45,34 @@ const BatchDetails = () => {
 
   const columns = useMemo<MRT_ColumnDef<Student>[]>(() => [
     { accessorKey: 'name', header: 'Name', size: 150 },
-    { accessorKey: 'mobile_number', header: 'Mobile Number', size: 200 },
+    // { accessorKey: 'mobile_number', header: 'Mobile Number', size: 200 },
+    {
+      accessorKey: 'phone_number',
+      header: 'Phone Number',
+      Cell: ({ row }) => (
+        <div className="flex space-x-4">
+           <a
+            href={`https://wa.me/${row.original.mobile_number}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-500 transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            <FaWhatsapp className="text-lg" />
+          </a>
+          <a
+            href={`tel:${row.original.mobile_number}`}
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-800 transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            <FaPhoneAlt className="text-lg" />
+            <span className="text-sm md:text-base">{row.original.mobile_number}</span>
+          </a>
+         
+        </div>
+      ),
+    },
+    
     // { accessorKey: 'group_name', header: 'Group', size: 150 },
     {
       accessorKey: 'profession',
@@ -230,17 +101,36 @@ const BatchDetails = () => {
     //     </button>
     //   ),
     // },
-     {
-            accessorKey: 'edit',
+    //  {
+    //         accessorKey: 'edit',
+    //         header: 'Edit',
+    //         Cell: ({ row }) => (
+    //           <button
+    //             className="px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-800 flex items-center gap-2"
+    //             onClick={() =>
+    //               router.push(
+    //                 `/admin/batches/${BatchId}/edit/${row.original.user_id}?data=${encodeURIComponent(
+    //                   JSON.stringify(row.original),
+    //                 )}`,
+    //               )
+    //             }
+    //           >
+    //             <FiEdit size={16} />
+    //             Edit
+    //           </button>
+    //         ),
+    //       },
+    {
+            accessorKey: 'action',
             header: 'Edit',
             Cell: ({ row }) => (
               <button
-                className="px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-800 flex items-center gap-2"
+                className="flex items-center gap-2 rounded bg-blue-900 px-3 py-1 text-white hover:bg-blue-800"
                 onClick={() =>
                   router.push(
-                    `/admin/batches/${BatchId}/edit/${row.original.user_id}?data=${encodeURIComponent(
-                      JSON.stringify(row.original),
-                    )}`,
+                    `/admin/editstudent/${
+                      row.original.user_id
+                    }`
                   )
                 }
               >
@@ -248,7 +138,7 @@ const BatchDetails = () => {
                 Edit
               </button>
             ),
-          },
+          }
   ], []);
 
   return (

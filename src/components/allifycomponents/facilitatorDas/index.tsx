@@ -69,7 +69,8 @@ const FacilitatorDas = () => {
   return (
     <div className="mt-10">
       <div className="mx-auto max-w-7xl">
-        <h1 className="text-2xl font-bold mb-6">Your Group Student Count</h1>
+      <h2 className="mb-5 text-lg font-bold dark:text-white">
+      Your Group Student Count</h2>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {isLoading
             ? Array.from({ length: 4 }).map((_, idx) => (

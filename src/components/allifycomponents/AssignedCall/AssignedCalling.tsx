@@ -5,6 +5,8 @@ import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { getUserByCallingId } from 'services/apiCollection';
 import ResponseModal from '../callingSystem/ResponseModal';
 import { FaPhoneAlt } from 'react-icons/fa';
+import { FaWhatsapp } from 'react-icons/fa6';
+import { ToastContainer } from 'react-toastify';
 
 type Student = {
   user_id: number;
@@ -95,22 +97,49 @@ const AssignedCalling = () => {
           }}
           className="rounded bg-indigo-900 px-3 py-1 text-white hover:bg-indigo-800"
         >
-          Respond
+          Response 
         </button>
       ),
     },
+    // {
+    //   accessorKey: 'mobile_number',
+    //   header: 'Phone Number',
+    //   size: 150,
+    //   Cell: ({ row }) => (
+    //     <a
+    //       href={`tel:${row.original.mobile_number}`}
+    //       className="flex items-center space-x-4 px-4 py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-800 transition duration-300 ease-in-out transform hover:scale-105"
+    //     >
+    //       <FaPhoneAlt className="text-xl" />
+    //       <span className="text-sm md:text-base">{row.original.mobile_number}</span>
+    //     </a>
+    //   ),
+    // },
     {
-      accessorKey: 'mobile_number',
+      accessorKey: 'phone_number',
       header: 'Phone Number',
-      size: 150,
       Cell: ({ row }) => (
-        <a
-          href={`tel:${row.original.mobile_number}`}
-          className="flex items-center space-x-4 px-4 py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-800 transition duration-300 ease-in-out transform hover:scale-105"
-        >
-          <FaPhoneAlt className="text-xl" />
-          <span className="text-sm md:text-base">{row.original.mobile_number}</span>
-        </a>
+        <div className="flex space-x-4">
+           <a
+            href={`https://wa.me/${row.original.mobile_number}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-500 transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            <FaWhatsapp className="text-lg" />
+            {/* <span className="text-sm md:text-base">WhatsApp</span> */}
+          </a>
+          <a
+            href={`tel:${row.original.mobile_number}`}
+            onClick={(e) => e.stopPropagation()}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-indigo-900 text-white hover:bg-indigo-800 transition duration-300 ease-in-out transform hover:scale-105"
+          >
+            <FaPhoneAlt className="text-lg" />
+            <span className="text-sm md:text-base">{row.original.mobile_number}</span>
+          </a>
+         
+        </div>
       ),
     },
   ], []);
@@ -121,6 +150,7 @@ const AssignedCalling = () => {
 
   return (
     <>
+    <ToastContainer/>
       <div className="mt-10">
         <h2 className="mb-3 text-lg font-bold dark:text-white">
           Assigned Calling

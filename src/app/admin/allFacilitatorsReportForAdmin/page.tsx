@@ -1,5 +1,4 @@
 'use client';
-import AllStudent from 'components/allifycomponents/AllStudent';
 import FacilitatorsForAdmin from 'components/allifycomponents/FacilitatorsForAdmin';
 import React from 'react';
 
