@@ -125,9 +125,9 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
         setTimeout(() => {
           resetForm();
           closeModal();
-        }, 3000);
+        }, 2000);
       } catch (error) {
-        toast.error('Failed to submit form');
+        toast.error(error.error);
       } finally {
         setIsSubmitting(false);
       }
