@@ -8,10 +8,13 @@ import { useRouter } from 'next/navigation';
 import { loginUser } from 'services/authService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 function SignInDefault() {
   const [formData, setFormData] = useState({ userId: '', password: '' });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -72,24 +75,30 @@ function SignInDefault() {
                   />
                 </div>
 
-                {/* Password */}
-                <div className="w-full mb-4">
-                  <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    Password*
-                  </label>
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    placeholder="*******"
-                    className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 
-                    focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400 
-                    dark:focus:border-blue-400"
-                  />
-                </div>
+{/* Password with Show/Hide */}
+<div className="w-full mb-4 relative">
+  <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+    Password*
+  </label>
+  <input
+    id="password"
+    name="password"
+    type={showPassword ? 'text' : 'password'}
+    value={formData.password}
+    onChange={handleChange}
+    required
+    placeholder="*******"
+    className="w-full p-3 pr-10 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 
+      focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400 
+      dark:focus:border-blue-400"
+  />
+  <span
+    onClick={() => setShowPassword(!showPassword)}
+    className="absolute right-3 top-[43px] cursor-pointer text-gray-500 dark:text-gray-300"
+  >
+    {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+  </span>
+</div>
 
                 {/* Sign In Button */}
                 <button

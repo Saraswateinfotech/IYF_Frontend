@@ -375,3 +375,58 @@ export const getStudentById = async (id) => {
     throw error;
   }
 };
+
+
+
+// Task Manager
+
+export const getTasksByUserId = async (userId) => {
+  try {
+    const response = await api.get(`/task/tasks/user/${userId}`);
+    return response.data.tasks;
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    throw error;
+  }
+};
+
+
+export const createTask = async (taskData) => {
+  try {
+    const response = await api.post('/task/tasks/', taskData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating task:", error);
+    throw error;
+  }
+};
+
+export const updateTaskStatus = async (taskId, status) => {
+  try {
+    const response = await api.patch(`/task/tasks/${taskId}/toggle-status`);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating task status:", error);
+    throw error;
+  }
+};
+
+export const deleteTask = async (taskId) => {
+  try {
+    const response = await api.delete(`/task/tasks/${taskId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    throw error;
+  }
+};
+
+export const updateTask = async (taskId, taskData) => {
+  try {
+    const response = await api.put(`/task/tasks/${taskId}`, taskData);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating task:", error);
+    throw error;
+  }
+};

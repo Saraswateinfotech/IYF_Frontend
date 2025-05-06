@@ -42,7 +42,8 @@ const DasAccounts = () => {
         // ✅ Apply filtering based on role
         let filtered = data;
         if (role === 'admin') {
-          filtered = data.filter((acc) => acc.role === 'facilitator');
+          // filtered = data.filter((acc) => acc.role === 'facilitator');
+          filtered = data.filter((acc) => ['facilitator', 'Coordinator'].includes(acc.role));
         } else if (role === 'coordinator') {
           filtered = data.filter((acc) => acc.role === 'frontliner');
         }
@@ -69,7 +70,9 @@ const DasAccounts = () => {
       // ✅ Apply filtering again here
       let filtered = data;
       if (role === 'admin') {
-        filtered = data.filter((acc) => acc.role === 'facilitator');
+        // filtered = data.filter((acc) => acc.role === 'facilitator');
+        filtered = data.filter((acc) => ['facilitator', 'Coordinator'].includes(acc.role));
+
       } else if (role === 'coordinator') {
         filtered = data.filter((acc) => acc.role === 'frontliner');
       }

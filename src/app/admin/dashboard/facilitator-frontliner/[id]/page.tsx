@@ -299,11 +299,26 @@ const FrontlinerCallingPage = () => {
           return <span>{statusMap[value] || value}</span>;
         },
       },
+      // {
+      //   accessorKey: 'student_status_date',
+      //   header: 'Last Calling Date',
+      //   Cell: ({ cell }) => {
+      //     const raw = cell.getValue<string>();
+      //     const date = new Date(raw);
+      //     const formatted = date.toLocaleDateString('en-GB', {
+      //       day: '2-digit',
+      //       month: 'long',
+      //       year: 'numeric',
+      //     });
+      //     return <span>{formatted}</span>;
+      //   },
+      // },
       {
         accessorKey: 'student_status_date',
         header: 'Last Calling Date',
         Cell: ({ cell }) => {
           const raw = cell.getValue<string>();
+          if (!raw) return null; // If null, don't display anything
           const date = new Date(raw);
           const formatted = date.toLocaleDateString('en-GB', {
             day: '2-digit',
@@ -313,6 +328,7 @@ const FrontlinerCallingPage = () => {
           return <span>{formatted}</span>;
         },
       },
+      
       {
         accessorKey: 'response',
         header: 'Calling Response',
