@@ -430,3 +430,13 @@ export const updateTask = async (taskId, taskData) => {
     throw error;
   }
 };
+
+export const deleteCompletedTasks = async (userId) => {
+  try {
+    const response = await api.delete(`/task/tasks/${userId}/deleteCompletedTasks`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleteCompleted Tasks:", error);
+    throw error;
+  }
+};
