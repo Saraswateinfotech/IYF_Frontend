@@ -14,10 +14,11 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
   const { triggerUpdate } = useDashboardContext();  
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [darkMode, setDarkMode] = useState(document.body.classList.contains('dark'));
 
- // Retrieve frontliner details from localStorage
- const frontlinerName = localStorage.getItem('name'); 
- const frontlinerId = localStorage.getItem('frontlinerId'); 
+  // Retrieve frontliner details from localStorage
+  const frontlinerName = localStorage.getItem('name'); 
+  const frontlinerId = localStorage.getItem('frontlinerId'); 
 
   const [formData, setFormData] = useState({
     name: '',
@@ -32,6 +33,23 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
     razorpay_payment_id: '',
   });
 
+  // Sync darkMode state with document.body.classList
+  useEffect(() => {
+    const updateDarkMode = () => {
+      const isDark = document.body.classList.contains('dark');
+      setDarkMode(isDark);
+    };
+
+    updateDarkMode();
+
+    const observer = new MutationObserver(updateDarkMode);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const resetForm = () => {
     setFormData({
@@ -53,8 +71,6 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
     let newErrors = {};
 
     if (!formData.name) newErrors.name = 'Name is required!';
-    // if (!formData.dob) newErrors.dob = 'Date of Birth is required!';
-    // if (!formData.mobile) newErrors.mobile = 'Mobile Number is required!';
     if (!formData.mobile) {
       newErrors.mobile = 'Mobile Number is required!';
     } else if (!/^\d{10}$/.test(formData.mobile)) {
@@ -67,8 +83,6 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
       newErrors.classMode = 'Please select a class mode!';
     if (!formData.paymentMethod)
       newErrors.paymentMethod = 'Please select a payment method!';
-    // if (!formData.frontlinerid)
-    //   newErrors.frontlinerid = 'Please select a frontliner!';
     if (
       (formData.classMode === 'Online' ||
         formData.paymentMethod === 'Referral') &&
@@ -109,9 +123,7 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
     const method = formData.paymentMethod.toLowerCase();
     const updatedForm = {
       ...formData,
-      // payment_status: method === 'unpaid' ? 'not_received' : 'received',
       payment_status: method === 'unpaid' || method === 'cash' ? 'not_received' : 'received',
-
     };
 
     if (method === 'online' || method === 'referral') {
@@ -168,8 +180,7 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
             setTimeout(() => {
               resetForm();
               closeModal();
-            }, 3000); // Wait for 3 seconds before closing the modal
-
+            }, 3000);
           } catch (error) {
             toast.error('Form submission failed after payment!');
           }
@@ -186,24 +197,83 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
 
   return (
     <>
-      <ToastContainer />
+      <style jsx global>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .Toastify__toast {
+          color: ${darkMode ? '#ffffff' : '#000000'} !important;
+          background-color: ${darkMode ? '#2d396b' : '#ffffff'} !important;
+          border: 1px solid ${darkMode ? '#374151' : '#e5e7eb'} !important;
+        }
+        .Toastify__toast--success {
+          background-color: ${darkMode ? '#1a4a3b' : '#e6fffa'} !important;
+          color: ${darkMode ? '#34d399' : '#38a169'} !important;
+        }
+        .Toastify__toast--error {
+          background-color: ${darkMode ? '#4a1a1a' : '#fff1f0'} !important;
+          color: ${darkMode ? '#f87171' : '#e53e3e'} !important;
+        }
+        .Toastify__progress-bar {
+          background-color: ${darkMode ? '#4b5563' : '#cbd5e0'} !important;
+        }
+        input, select {
+          background-color: ${darkMode ? '#707eae' : '#fff'} !important;
+          color: ${darkMode ? 'white' : 'inherit'} !important;
+          border-color: ${darkMode ? '#4b5563' : '#d1d5db'} !important;
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+          filter: ${darkMode ? 'invert(1)' : 'none'};
+        }
+        select {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='${darkMode ? 'white' : 'black'}' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+          background-repeat: no-repeat;
+          background-position: right 0.75rem center;
+          background-size: 1em;
+        }
+        select::-ms-expand {
+          display: none;
+        }
+      `}</style>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme={darkMode ? 'dark' : 'light'}
+      />
       <Script src="https://checkout.razorpay.com/v1/checkout.js" />
 
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 p-4 backdrop-blur-md">
-        <div className="scrollbar-hide relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
+        <div className={`scrollbar-hide relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg p-6 shadow-xl ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
           <button
             onClick={closeModal}
-            className="absolute right-3 top-3 text-gray-700"
+            className={`absolute right-3 top-3 ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-700 hover:text-gray-900'}`}
           >
             <X size={20} />
           </button>
-          <h2 className="mb-4 text-center text-xl font-bold">
+          <h2 className={`mb-4 text-center text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
             Registration Form
           </h2>
 
           <div className="flex flex-col gap-4">
             {/* Name */}
-            <label className="font-semibold">Name *</label>
+            <label className={`font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+              Name *
+            </label>
             <input
               type="text"
               name="name"
@@ -216,7 +286,9 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
             )}
 
             {/* DOB */}
-            <label className="font-semibold">Date of Birth (Optional)</label>
+            <label className={`font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+              Date of Birth (Optional)
+            </label>
             <input
               type="date"
               name="dob"
@@ -224,10 +296,11 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
               value={formData.dob}
               onChange={handleChange}
             />
-            {/* {errors.dob && <p className="text-sm text-red-500">{errors.dob}</p>} */}
 
             {/* Mobile */}
-            <label className="font-semibold">Mobile Number *</label>
+            <label className={`font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+              Mobile Number *
+            </label>
             <input
               type="text"
               name="mobile"
@@ -240,7 +313,9 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
             )}
 
             {/* Address */}
-            <label className="font-semibold">Address (Optional)</label>
+            <label className={`font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+              Address (Optional)
+            </label>
             <input
               type="text"
               name="address"
@@ -250,33 +325,21 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
             />
 
             {/* Frontliner */}
-            {/* <label className="font-semibold">Frontliner Name *</label>
-            <select
+            <label className={`font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+              Frontliner Name *
+            </label>
+            <input
+              type="text"
               name="frontlinerid"
               className="rounded-md border px-4 py-2"
-              value={formData.frontlinerid}
-              onChange={handleChange}
-            >
-              <option value="">Select Frontliner Name</option>
-                <option value={frontlinerId}>
-                  {frontlinerName}
-                </option>
-            </select> */}
-            <label className="font-semibold">Frontliner Name *</label>
-<input
-  type="text"
-  name="frontlinerid"
-  className="rounded-md border px-4 py-2"
-  value={frontlinerName}
-  readOnly 
-/>
-
-            {/* {errors.frontlinerid && (
-              <p className="text-sm text-red-500">{errors.frontlinerid}</p>
-            )} */}
+              value={frontlinerName}
+              readOnly 
+            />
 
             {/* Profession */}
-            <label className="font-semibold">Profession *</label>
+            <label className={`font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+              Profession *
+            </label>
             <select
               name="profession"
               className="rounded-md border px-4 py-2"
@@ -292,7 +355,9 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
             )}
 
             {/* Class Mode */}
-            <label className="font-semibold">Class Mode *</label>
+            <label className={`font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+              Class Mode *
+            </label>
             <select
               name="classMode"
               className="rounded-md border px-4 py-2"
@@ -308,7 +373,9 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
             )}
 
             {/* Payment Method */}
-            <label className="font-semibold">Payment Method *</label>
+            <label className={`font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+              Payment Method *
+            </label>
             <select
               name="paymentMethod"
               className="rounded-md border px-4 py-2"
@@ -318,7 +385,6 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
               <option value="">Select Payment Method</option>
               <option value="Unpaid">Unpaid</option>
               <option value="Online">Online</option>
-              {/* <option value="Referral">Referral</option> */}
               <option value="Cash">Cash</option>
             </select>
             {errors.paymentMethod && (
@@ -327,7 +393,7 @@ const RegistrationForm = ({ isOpen, closeModal }) => {
 
             {/* Submit Button */}
             <button
-              className="rounded-md bg-indigo-900 px-4 py-2 text-white hover:bg-indigo-800 disabled:opacity-50"
+              className={`rounded-md px-4 py-2 text-white disabled:opacity-50 ${darkMode ? 'bg-indigo-800 hover:bg-indigo-700' : 'bg-indigo-900 hover:bg-indigo-800'}`}
               onClick={handleSubmit}
               disabled={isSubmitting}
             >
