@@ -110,7 +110,7 @@ const routes = [
     roles: ['admin'],
   },
   {
-    name: 'Add Task',
+    name: 'My Tasks',
     layout: '/admin',
     path: '/addtask',
     icon: <GrTask />,

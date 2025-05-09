@@ -299,12 +299,12 @@ const ResponseModal = ({
           onChange={(e) => setResponse(e.target.value)}
         >
           <FormControlLabel
-            value="will_come"
+            value="will Come"
             control={<Radio />}
             label="Interested (Will Come)"
           />
           <FormControlLabel
-            value="not_interested"
+            value="Not Interested"
             control={<Radio />}
             label="Not Interested"
           />
@@ -314,7 +314,7 @@ const ResponseModal = ({
             label="Busy" 
           />
           <FormControlLabel
-            value="might_come"
+            value="Might Come"
             control={<Radio />}
             label="Might Come"
           />
