@@ -11,6 +11,7 @@ import { getFrontlinerdetailReport, getGroupUserCount, getStudentClassReport } f
 import { Users } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa6';
 import { FaPhoneAlt } from 'react-icons/fa';
+import BoxModale from 'components/allifycomponents/facilitatorDas/BoxModale';
 
 const groupList = [
   'DYS',
@@ -167,6 +168,16 @@ export default function FacilitatorUserReport() {
   const [data, setData] = useState<Student[]>([]);
   const [month, setMonth] = useState(monthList[new Date().getMonth()]);
   const [year, setYear] = useState(`${new Date().getFullYear()}`);
+    const [modalData, setModalData] = useState<{ title: string; count: number; facilitatorIds:any } | null>(null);
+
+
+    const openModal = (groupName: string, userCount: number) => {
+    setModalData({ title: groupName, count: userCount, facilitatorIds:facilitatorId });
+  };
+
+  const closeModal = () => {
+    setModalData(null);
+  };
 
   const fetchData = useCallback(async () => {
     if (!facilitatorId) return;
@@ -288,7 +299,7 @@ export default function FacilitatorUserReport() {
     <div className="mt-6">
         <h2 className="mb-5 text-lg font-bold dark:text-white">
         Facilitator {facilitatorName} Group Student Count</h2>
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {/* <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {isLoading
           ? Array.from({ length: 4 }).map((_, idx) => (
               <div
@@ -310,8 +321,28 @@ export default function FacilitatorUserReport() {
                   <p className="mt-2 text-4xl font-bold">{group.total_users}</p>
                 </div>
               ))}
-      </div>
-
+      </div> */}
+  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {isLoading
+            ? Array.from({ length: 4 }).map((_, idx) => (
+                <div key={idx} className="animate-pulse rounded-xl bg-gray-300 p-6 h-32" />
+              ))
+            : groupData
+                .filter((group) => group.total_users > 0)
+                .map((group, idx) => (
+                  <div
+                    key={idx}
+                    className={`rounded-xl p-4 text-white shadow-2xl transition-transform duration-300 hover:scale-105 cursor-pointer ${group.color}`}
+                    onClick={() => openModal(group.group_name, group.total_users)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-xl font-semibold">{group.group_name}</h2>
+                      <Users className="h-6 w-6" />
+                    </div>
+                    <p className="mt-2 text-4xl font-bold">{group.total_users}</p>
+                  </div>
+                ))}
+        </div>
       <h2 className="mt-5 mb-5 text-lg font-bold dark:text-white">
         Facilitator {facilitatorName} Student Report</h2>
 
@@ -379,6 +410,9 @@ export default function FacilitatorUserReport() {
           }}
         />
       </div>
+        <BoxModale isOpen={!!modalData} onClose={closeModal} title={modalData?.title || ''} facilitatorIds={facilitatorId}>
+              <p></p>
+            </BoxModale>
     </div>
   );
 }
