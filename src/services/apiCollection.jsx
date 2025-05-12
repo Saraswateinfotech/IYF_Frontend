@@ -440,3 +440,13 @@ export const deleteCompletedTasks = async (userId) => {
     throw error;
   }
 };
+
+export const getTop3Frontliners = async (month, year) => {
+  try {
+    const response = await api.get(`/dashboard/top-3-frontliners/${month}/${year}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching top 3 frontliners:", error);
+    throw error;  // Re-throw the error after logging
+  }
+};
