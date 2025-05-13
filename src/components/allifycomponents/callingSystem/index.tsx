@@ -145,7 +145,7 @@ import { useRouter } from 'next/navigation';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { toast, ToastContainer } from 'react-toastify';
 import {
-  fetchAllFacilitatorOrFrontliner,
+  getAllFrontlinerReports,
   getdashboardReport,
   getTop3Frontliners,
 } from 'services/apiCollection';
@@ -156,6 +156,11 @@ type Frontliner = {
   user_id: number;
   name: string;
   phone_number: string;
+  weekly_will_come_student_number:Number;
+  weekly_total_registered_student_number:Number;
+  total_register:Number;
+  total_amount:Number;
+  pending_amount:Number;
   role: string;
 };
 
@@ -186,14 +191,12 @@ const CallingSystem = () => {
       try {
         setIsLoading(true);
         const [frontlinerRes, dashboardReport] = await Promise.all([
-          fetchAllFacilitatorOrFrontliner(),
+          getAllFrontlinerReports(),
           getdashboardReport(),
         ]);
 
-        const filteredFrontliners = frontlinerRes.filter(
-          (item: Frontliner) => item.role === 'frontliner'
-        );
-        setFrontliners(filteredFrontliners);
+       
+        setFrontliners(frontlinerRes);
 
         setReport(dashboardReport[0]);
       } catch (err) {
@@ -252,6 +255,12 @@ const CallingSystem = () => {
         </div>
       ),
     },
+        { accessorKey: 'weekly_will_come_student_number', header: 'Weekly will Come' },
+    { accessorKey: 'weekly_total_registered_student_number', header: 'Weekly Total Registered' },
+    { accessorKey: 'total_register', header: 'Total Register' },
+    { accessorKey: 'total_amount', header: 'Total Amount' },
+    { accessorKey: 'pending_amount', header: 'Pending Amount' },
+
   ], []);
 
   const handleFrontlinerClick = (frontliner: Frontliner) => {
