@@ -450,3 +450,13 @@ export const getTop3Frontliners = async (month, year) => {
     throw error;  // Re-throw the error after logging
   }
 };
+
+export const getAllFrontlinerReports = async () => {
+    try {
+        const response = await api.get('/dashboard/frontliners');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching frontliner reports:', error);
+        throw error;
+    }
+};
