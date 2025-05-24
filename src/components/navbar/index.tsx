@@ -79,7 +79,7 @@ const Navbar = (props: {
               className="flex w-full items-center justify-center rounded-full bg-indigo-900 px-4 py-2 text-lg font-medium text-white hover:bg-indigo-800 sm:w-auto"
             >
               <IoPersonAddSharp className="text-xl" />
-              <span className="hidden pl-2 sm:block">Add Student</span>
+              <span className="hidden pl-2 sm:block">Add New Student</span>
             </button>
           </div>
 

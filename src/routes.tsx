@@ -64,6 +64,7 @@ import React from 'react';
 import { MdHome, MdAddTask, MdCall } from 'react-icons/md';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import { IoIosMan } from 'react-icons/io';
+import { GrTask } from "react-icons/gr";
 
 const routes = [
   {
@@ -107,6 +108,13 @@ const routes = [
     path: '/allFacilitatorsReportForAdmin',
     icon: <IoIosMan />,
     roles: ['admin'],
+  },
+  {
+    name: 'My Tasks',
+    layout: '/admin',
+    path: '/addtask',
+    icon: <GrTask />,
+    roles: ['admin','coordinator','facilitator','frontliner'],
   },
   {
     name: 'Das-Accounts',
